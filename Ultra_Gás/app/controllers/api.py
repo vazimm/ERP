@@ -357,3 +357,63 @@ def api_entrega_pagar(entrega_id):
         except Exception:
             pass
         return jsonify({'error': 'Falha ao marcar pagamento', 'detail': str(e)}), 500
+
+
+@api_bp.route('/themes', methods=['GET'])
+def api_list_themes():
+    """Lista as variáveis de cor agrupadas por tema.
+
+    Retorno:
+    {
+      "root": {"cor-fundo": "#ffffff", ...},
+      "rosa": {"cor-fundo": "#ffcbcd", ...},
+      ...
+    }
+    Usa valor_atual se existir, senão valor_padrao.
+    As cores são filtradas pelo campo enviroment, que deve
+    corresponder ao enviroment do usuário logado. Se não houver
+    usuário logado ou nenhuma cor para aquele enviroment, volta
+    para as cores globais (enviroment NULL).
+    """
+    try:
+        from app.models.color import Color
+
+        temas = {}
+
+        # Ambiente do usuário logado
+        env = session.get('enviroment')
+
+        # 1) tenta buscar cores específicas do ambiente
+        cores = []
+        if env:
+            cores = Color.query.filter_by(enviroment=env).all()
+
+        # 2) se não encontrou cores específicas, usa cores globais (enviroment NULL)
+        if not cores:
+            cores = Color.query.filter(Color.enviroment.is_(None)).all()
+
+        for c in cores:
+            tema = c.tema or 'root'
+            if tema not in temas:
+                temas[tema] = {}
+            temas[tema][c.nome_variavel] = c.valor_atual or c.valor_padrao
+
+        return jsonify(temas)
+    except Exception as e:
+        return jsonify({'error': 'Falha ao buscar temas', 'detail': str(e)}), 500
+
+
+@api_bp.route('/themes/<tema>/apply', methods=['POST'])
+def api_apply_theme(tema):
+    """Define o tema atual na sessão do usuário.
+
+    O front-end deve ler esse tema e requisitar /api/themes
+    para obter as variáveis e aplicá-las via CSS custom properties.
+    """
+    tema = (tema or '').strip().lower()
+    if not tema:
+        return jsonify({'error': 'Tema inválido'}), 400
+
+    # Apenas grava na sessão; a aplicação do tema é via JS/CSS.
+    session['current_theme'] = tema
+    return jsonify({'ok': True, 'tema': tema})

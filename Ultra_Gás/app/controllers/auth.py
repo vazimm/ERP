@@ -24,8 +24,9 @@ def login():
     if check_password_hash(user.password, password):
         session['user_id'] = user.id
         session['user_type'] = user.user_type
-        # salvar o nome do usuário na sessão para mostrar no template
+        # salvar o nome do usuário e o ambiente na sessão para mostrar no template
         session['user_name'] = user.name
+        session['enviroment'] = user.enviroment
         return redirect(url_for('dashboard.show_dashboard'))
     else:
         flash('Senha incorreta', 'danger')
