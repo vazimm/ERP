@@ -10,7 +10,7 @@ class Color(db.Model):
 	nome_variavel = db.Column(db.String(50), nullable=False)
 
 	# Valor padrão em formato HEX ou RGB, por exemplo: "#ffffff"
-	valor_padrao = db.Column(db.String(20), nullable=False)
+	valor_padrao = db.Column(db.String(50), nullable=False)
 
 	# Valor atual aplicado (permite personalização sem perder o padrão)
 	valor_atual = db.Column(db.String(20), nullable=True)

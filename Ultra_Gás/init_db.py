@@ -151,6 +151,12 @@ def init_test_users():
             Color(nome_variavel='cor-secundaria', valor_padrao='#ffffff', tema='root', descricao='Cor secundária / cartões', enviroment='Administrador de Ambiente'),
             Color(nome_variavel='cor-botao', valor_padrao='#bbbbbb', tema='root', descricao='Cor dos botões padrão', enviroment='Administrador de Ambiente'),
 
+            # Variáveis de transição globais do root
+            Color(nome_variavel='tran-02', valor_padrao='all 0.2s ease', tema='root', descricao='Transição padrão 0.2s', enviroment='Administrador de Ambiente'),
+            Color(nome_variavel='tran-03', valor_padrao='all 0.3s ease', tema='root', descricao='Transição padrão 0.3s', enviroment='Administrador de Ambiente'),
+            Color(nome_variavel='tran-04', valor_padrao='all 0.4s ease', tema='root', descricao='Transição padrão 0.4s', enviroment='Administrador de Ambiente'),
+            Color(nome_variavel='tran-05', valor_padrao='all 0.5s ease', tema='root', descricao='Transição padrão 0.5s', enviroment='Administrador de Ambiente'),
+
                 # Tema rosa
                 Color(nome_variavel='cor-fundo', valor_padrao='#ffcbcd', tema='rosa', enviroment='Administrador de Ambiente'),
                 Color(nome_variavel='cor-texto', valor_padrao='#000000', tema='rosa', enviroment='Administrador de Ambiente'),
