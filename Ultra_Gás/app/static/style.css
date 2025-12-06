@@ -1,0 +1,364 @@
+/* ===== GERAL ===== */
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background-color: var(--cor-fundo);
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--cor-texto);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+/* ===== CABEÇALHO ===== */
+.header-wrapper {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+.brand .brand-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--cor-texto);
+}
+
+/* ===== CARD DE LOGIN ===== */
+.login-card {
+    background-color: var(--cor-primaria);
+    border-radius: 20px;
+    padding: 30px 40px;
+    width: 100%;
+    /*Altera a largura do card de login*/
+    max-width: 580px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    text-align: left;
+}
+
+.welcome {
+    color: var(--cor-texto);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+/* ===== FORM ===== */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--cor-secundaria);
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    color: var(--cor-texto);
+}
+
+.login-form button {
+    background-color: var(--cor-secundaria);
+    color: var(--cor-botao-texto);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    align-self: flex-end;
+}
+
+.login-form button:hover {
+    opacity: 0.85;
+}
+
+/* ===== LINKS ===== */
+.links {
+    margin-bottom: 10px;
+}
+
+.forgot-link {
+    font-size: 13px;
+    text-decoration: none;
+    color: var(--cor-texto);
+    font-weight: bold;
+}
+
+/* ===== FOOTER ===== */
+.page-footer {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 16px;
+    color: var(--cor-texto);
+}
+
+.footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* same width as .login-card so footer aligns under card */
+    max-width: 580px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 12px;
+}
+
+.footer-left {
+    flex: 0 1 auto;
+    text-align: left;
+}
+
+.footer-right {
+    flex: 0 1 auto;
+    text-align: right;
+}
+
+/* Wrapper que alinha o card e o footer */
+.content-wrapper {
+    width: 100%;
+    max-width: 580px;
+    /* mesma largura do login-card */
+    margin: 0 auto;
+}
+
+.footer-link {
+    color: var(--cor-texto);
+    text-decoration: none;
+    margin: 0 6px;
+    cursor: pointer;
+}
+
+.footer-sep {
+    color: var(--cor-texto);
+    margin: 0 4px;
+}
+
+/* ===== MODAIS ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease;
+    z-index: 999;
+}
+
+.modal-card {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 92%;
+    max-width: 720px;
+    background: var(--cor-secundaria);
+    border-radius: 8px;
+    border: 10px solid var(--cor-fundo);
+    padding: 22px 24px 26px 24px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 1000;
+    box-sizing: border-box;
+    /* limita altura para caber na viewport e permite rolagem interna */
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.modal-card[aria-hidden="false"],
+.modal-overlay[aria-hidden="false"] {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-card[aria-hidden="false"] {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-close {
+    position: absolute;
+    left: 10px;
+    top: 8px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--cor-texto);
+}
+
+.modal-title {
+    text-align: center;
+    margin: 12px 0 10px 0;
+    font-weight: 700;
+    color: var(--cor-texto);
+}
+
+.modal-content {
+    text-align: left;
+    line-height: 1.5;
+    color: var(--cor-texto);
+    padding-right: 6px;
+    /* evitar corte de scrollbar no conteúdo */
+}
+
+/* ===== Botões ===== */
+
+/* ===== MOBILE / RESPONSIVE ===== */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .header-wrapper {
+        margin-bottom: 8px;
+    }
+
+    .brand img {
+        width: 48px;
+        height: 48px;
+    }
+
+    .brand .brand-title {
+        font-size: 28px;
+    }
+
+    .login-card {
+        padding: 20px;
+        border-radius: 16px;
+        max-width: 520px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+    }
+
+    .login-card .welcome,
+    .login-form .links {
+        margin-left: 3px !important;
+    }
+
+    /* ensure content and footer use the same centered container */
+    .content-wrapper {
+        width: 100%;
+        max-width: 520px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 8px;
+    }
+
+    .welcome {
+        font-size: 1.25rem;
+    }
+
+    .login-form input {
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    .login-form button,
+    .btn {
+        width: 100%;
+        align-self: stretch;
+        padding: 12px;
+        border-radius: 16px;
+    }
+
+    /* reorganiza os elementos do footer e centraliza em relação ao card */
+    .footer-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+        width: 100%;
+        max-width: 520px;
+        margin: 12px auto 0;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .footer-left,
+    .footer-right {
+        width: 100%;
+        text-align: center;
+    }
+
+    .footer-right {
+        order: 1;
+    }
+
+    .footer-left {
+        order: 2;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    .modal-card {
+        width: 94%;
+        max-width: 560px;
+        padding: 18px;
+    }
+}
+
+@media (max-width: 420px) {
+    .brand img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .brand .brand-title {
+        font-size: 22px;
+    }
+
+    .login-card {
+        padding: 16px;
+        max-width: 100%;
+    }
+
+    .welcome {
+        font-size: 1.1rem;
+    }
+
+    .login-form input {
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 14px;
+    }
+
+    .btn {
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 14px;
+    }
+
+    .modal-card {
+        max-height: calc(100vh - 40px);
+        padding: 14px;
+    }
+}

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Login</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/static/themeVar.css" />
+        <link rel="stylesheet" href="/static/style.css" />
+    </head>
+    <body class="tema-rosa">
+        <!-- Cabeçalho com logo e título -->
+        <div class="header-wrapper">
+            <div class="brand" role="banner">
+                <img
+                    src="/static/img/logo-placeholder.png"
+                    alt="Ultra Gás"
+                    onerror="this.style.display='none'"
+                />
+                <span class="brand-title">Ultra Gás</span>
+            </div>
+        </div>
+
+        <!-- Formulário unificado -->
+        <div class="content-wrapper">
+            <main class="login-card" role="main" aria-label="Área de login">
+                <h2 class="welcome text-left">Bem vindo</h2>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="mb-3">
+                    {% for category, msg in messages %}
+                    <div class="alert alert-{{ category }}" role="alert">
+                        {{ msg }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %} {% endwith %}
+
+                <form
+                    method="post"
+                    action="/login"
+                    class="login-form"
+                    novalidate
+                >
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="E-mail"
+                        required
+                    />
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Senha"
+                        required
+                    />
+                    <div class="links">
+                        <a href="#" class="forgot-link">Esqueceu sua senha?</a>
+                    </div>
+                    <button type="submit" class="">Acessar</button>
+                </form>
+            </main>
+
+            <!-- Rodapé -->
+            <footer class="page-footer below-card">
+                <div class="footer-row">
+                    <div class="footer-left">
+                        &copy; {{ current_year if current_year is defined else
+                        '2025' }} Ultra Gás
+                    </div>
+                    <div class="footer-right">
+                        <a href="#" class="footer-link" data-modal="about"
+                            >Sobre</a
+                        >
+                        <span class="footer-sep">|</span>
+                        <a href="#" class="footer-link" data-modal="privacy"
+                            >Privacidade</a
+                        >
+                        <span class="footer-sep">|</span>
+                        <a href="#" class="footer-link" data-modal="contact"
+                            >Contato</a
+                        >
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Modais -->
+        <div id="modal-overlay" class="modal-overlay" aria-hidden="true"></div>
+
+        <div
+            id="modal-about"
+            class="modal-card"
+            role="dialog"
+            aria-labelledby="modal-about-title"
+            aria-hidden="true"
+        >
+            <button class="modal-close" aria-label="Fechar">×</button>
+            <h3 id="modal-about-title" class="modal-title">Sobre</h3>
+            <div class="modal-content">
+                Texto sobre a empresa e informações relevantes. Alinhe eventual
+                texto à esquerda aqui.
+            </div>
+        </div>
+
+        <div
+            id="modal-privacy"
+            class="modal-card"
+            role="dialog"
+            aria-labelledby="modal-privacy-title"
+            aria-hidden="true"
+        >
+            <button class="modal-close" aria-label="Fechar">×</button>
+            <h3 id="modal-privacy-title" class="modal-title">
+                Política de Privacidade
+            </h3>
+
+            <div class="modal-content" style="text-align: left">
+                <p><strong>Vigência:</strong> 09 de outubro de 2025</p>
+
+                <p>
+                    A presente Política de Privacidade descreve como
+                    <strong>[NOME_DO_SITE_OU_EMPRESA]</strong> ("nós", "nosso"
+                    ou "empresa") coleta, usa, armazena, compartilha e protege
+                    os seus dados pessoais ao acessar e utilizar nosso site
+                    <a href="[URL_DO_SITE]">[URL_DO_SITE]</a> e/ou serviços
+                    relacionados.
+                </p>
+
+                <h4>1. Dados que coletamos</h4>
+                <ul>
+                    <li>
+                        <strong>Dados fornecidos diretamente:</strong> nome,
+                        e-mail, telefone, endereço (quando aplicável), mensagens
+                        enviadas via formulários.
+                    </li>
+                    <li>
+                        <strong>Dados de uso:</strong> páginas visitadas,
+                        duração da visita, horário de acesso e desempenho.
+                    </li>
+                    <li>
+                        <strong>Dados técnicos:</strong> IP, tipo de navegador,
+                        sistema operacional e identificadores de dispositivo.
+                    </li>
+                    <li>
+                        <strong>Cookies:</strong> dados armazenados para lembrar
+                        preferências e analisar o uso do site.
+                    </li>
+                </ul>
+
+                <h4>2. Finalidade do tratamento</h4>
+                <ul>
+                    <li>Fornecer e melhorar os serviços e o site.</li>
+                    <li>Responder a solicitações e suporte técnico.</li>
+                    <li>Enviar comunicações administrativas e atualizações.</li>
+                    <li>
+                        Enviar comunicações de marketing com consentimento
+                        prévio.
+                    </li>
+                    <li>Prevenir fraudes e garantir segurança.</li>
+                </ul>
+
+                <h4>3. Base legal</h4>
+                <ul>
+                    <li>Execução de contrato;</li>
+                    <li>Consentimento do titular;</li>
+                    <li>Cumprimento de obrigação legal;</li>
+                    <li>
+                        Legítimo interesse, como segurança e melhoria dos
+                        serviços.
+                    </li>
+                </ul>
+
+                <h4>4. Cookies e tecnologias semelhantes</h4>
+                <p>
+                    Utilizamos cookies para melhorar a navegação e personalizar
+                    a experiência. Você pode gerenciá-los nas configurações do
+                    navegador, podendo afetar a funcionalidade do site.
+                </p>
+
+                <h4>5. Compartilhamento de dados</h4>
+                <p>
+                    Podemos compartilhar dados com prestadores de serviços (como
+                    hospedagem e envio de e-mails), autoridades legais quando
+                    exigido, ou terceiros com consentimento explícito.
+                </p>
+
+                <h4>6. Segurança e retenção</h4>
+                <p>
+                    Adotamos medidas técnicas e administrativas para proteger
+                    seus dados contra acessos não autorizados. Os dados são
+                    mantidos apenas pelo tempo necessário às finalidades
+                    descritas.
+                </p>
+
+                <h4>7. Direitos do titular (LGPD / GDPR)</h4>
+                <p>
+                    Você pode solicitar: acesso, correção, exclusão,
+                    portabilidade e revogação do consentimento. Para isso, entre
+                    em contato:
+                </p>
+                <p>
+                    <strong>E-mail:</strong>
+                    <a href="mailto:[SEU_EMAIL]">[SEU_EMAIL]</a>
+                </p>
+
+                <h4>8. Alterações</h4>
+                <p>
+                    Esta política poderá ser atualizada periodicamente. A nova
+                    versão será publicada com a data de vigência revisada.
+                </p>
+
+                <h4>9. Contato</h4>
+                <p>
+                    <strong>Responsável:</strong>
+                    [NOME_DO_SITE_OU_EMPRESA]<br />
+                    <strong>E-mail:</strong>
+                    <a href="mailto:[SEU_EMAIL]">[SEU_EMAIL]</a><br />
+                    <strong>Site:</strong>
+                    <a href="[URL_DO_SITE]">[URL_DO_SITE]</a>
+                </p>
+
+                <small>Última atualização: 09 de outubro de 2025.</small>
+            </div>
+        </div>
+
+        <div
+            id="modal-contact"
+            class="modal-card"
+            role="dialog"
+            aria-labelledby="modal-contact-title"
+            aria-hidden="true"
+        >
+            <button class="modal-close" aria-label="Fechar">×</button>
+            <h3 id="modal-contact-title" class="modal-title">Contato</h3>
+
+            <div class="modal-content" style="text-align: left">
+                <p>
+                    Entre em contato conosco para dúvidas, sugestões, suporte
+                    técnico ou informações gerais. Retornaremos o mais rápido
+                    possível.
+                </p>
+
+                <h4>📧 E-mail</h4>
+                <p>
+                    <a href="mailto:[SEU_EMAIL]">[SEU_EMAIL]</a>
+                </p>
+
+                <h4>📞 Telefone</h4>
+                <p>
+                    <a href="tel:[SEU_TELEFONE]">[SEU_TELEFONE]</a>
+                </p>
+
+                <h4>📍 Endereço</h4>
+                <p>
+                    [SEU_ENDERECO]<br />
+                    [CIDADE] - [ESTADO], [CEP]
+                </p>
+
+                <h4>🕒 Horário de atendimento</h4>
+                <p>
+                    Segunda a sexta-feira, das 8h às 18h<br />
+                    Sábados, das 9h às 13h
+                </p>
+
+                <h4>🌐 Redes sociais</h4>
+                <ul style="list-style-type: none; padding-left: 0">
+                    <li>
+                        Instagram:
+                        <a href="[URL_INSTAGRAM]" target="_blank"
+                            >@seudominio</a
+                        >
+                    </li>
+                    <li>
+                        Facebook:
+                        <a href="[URL_FACEBOOK]" target="_blank"
+                            >facebook.com/seudominio</a
+                        >
+                    </li>
+                    <li>
+                        LinkedIn:
+                        <a href="[URL_LINKEDIN]" target="_blank"
+                            >linkedin.com/company/seudominio</a
+                        >
+                    </li>
+                </ul>
+
+                <p>
+                    Caso prefira, envie-nos uma mensagem diretamente pelo
+                    formulário de contato disponível em nosso site.
+                </p>
+
+                <small>Última atualização: 09 de outubro de 2025.</small>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="/static/js/modals.js"></script>
+    </body>
+</html>

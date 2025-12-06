@@ -1,0 +1,1266 @@
+@import url();
+
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    background: var(--cor-fundo);
+    transition: var(--tran-05)
+}
+
+/* ====== SIDEBAR ====== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    padding: 10px 14px;
+    background: var(--cor-secundaria);
+    transition: var(--tran-05);
+    z-index: 100;
+}
+
+.sidebar.close {
+    width: 88px;
+}
+
+/* ====== Resuable CSS ====== */
+.sidebar .text {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--cor-texto);
+    transition: var(--tran-04);
+    white-space: nowrap;
+    opacity: 1;
+}
+
+.sidebar.close .text {
+    opacity: 0;
+}
+
+.sidebar .image {
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar header {
+    position: relative;
+}
+
+.sidebar .image-text img {
+    width: 40px;
+    border-radius: 6px;
+}
+
+.sidebar header .image-text {
+    display: flex;
+    align-items: center;
+}
+
+header .image-text .header-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.header-text .name {
+    font-weight: 600;
+}
+
+.header-text .profession {
+    margin-top: -2px;
+}
+
+.sidebar header .toggle {
+    position: absolute;
+    top: 50%;
+    right: -25px;
+    transform: translateY(-50%) rotate(180deg);
+    height: 25px;
+    width: 25px;
+    background: var(--cor-botao);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--cor-secundaria);
+    font-size: 22px;
+    transition: var(--tran-03);
+}
+
+.sidebar.close header .toggle {
+    transform: translateY(-50%);
+}
+
+.sidebar .menu {
+    margin-top: 35px;
+}
+
+.sidebar li {
+    height: 50px;
+    margin-top: 10px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar li .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    font-size: 20px;
+
+}
+
+.sidebar li .icon,
+.sidebar li .icon {
+    color: var(--cor-texto);
+    transition: var(--tran-02);
+}
+
+.sidebar li a {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: var(--tran-04);
+}
+
+.sidebar li a:hover {
+    background: var(--cor-botao);
+}
+
+.sidebar li a:hover .icon,
+.sidebar li a:hover .text {
+    color: var(--cor-secundaria)
+}
+
+.sidebar .menu-bar {
+    height: calc(100% - 150px);
+    /*Espaço entre botões inferiores e superiores*/
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.home {
+    position: relative;
+    left: 250px;
+    height: 100vh;
+    width: calc(100% - 250px);
+    background: var(--cor-fundo);
+    transition: var(--tran-05);
+}
+
+.home .text {
+    font-size: 30px;
+    font-weight: 500;
+    padding: 8px 40px;
+    color: var(--cor-texto);
+}
+
+.sidebar.close~.home {
+    left: 88px;
+    width: calc(100% - 88px);
+}
+
+.conteudo {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.conteudo.ativo {
+    display: flex;
+    opacity: 1;
+}
+
+/* =====================
+   DASHBOARD PRINCIPAL
+===================== */
+
+#dashboard {
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background: var(--cor-fundo);
+    transition: var(--tran-05);
+}
+
+.dashboard-container {
+    text-align: center;
+    width: 90%;
+    max-width: 1000px;
+}
+
+.welcome-text {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--cor-texto);
+    margin-bottom: 40px;
+}
+
+/* GRID DOS CARDS */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.card-button {
+    border: none;
+    background: none;
+    padding: 0;
+    text-align: left;
+}
+
+.card-button:focus {
+    outline: none;
+}
+
+/* ESTILO DOS CARDS */
+.card {
+    background: var(--cor-secundaria);
+    color: var(--cor-texto);
+    border-radius: 15px;
+    padding: 30px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card .icon {
+    font-size: 2.5rem;
+    color: var(--cor-texto);
+    margin-bottom: 10px;
+}
+
+.card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.card .number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =====================
+        Cliente
+===================== */
+
+#cliente {
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background: var(--cor-fundo);
+    transition: var(--tran-05);
+}
+
+/* =====================
+        Estoque
+===================== */
+
+#estoque {
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background: var(--cor-fundo);
+    transition: var(--tran-05);
+}
+
+.estoque-container {
+    width: 100%;
+    padding: 20px 40px;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--cor-texto);
+    margin: 10px 0 20px;
+    text-align: center;
+    /* Centraliza o título horizontalmente */
+}
+
+/* Ajusta a estrutura para duas colunas centralizadas */
+.estoque-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Centraliza verticalmente */
+    gap: 120px;
+    /* Aumenta o espaçamento para 120px */
+}
+
+.cards-column {
+    flex: none;
+    /* Garante que os cards não se expandam */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-end;
+    /* Alinha os cards à direita dentro da coluna */
+}
+
+.estoque-card {
+    width: 250px;
+    /* Reduz a largura dos cards */
+    min-height: 120px;
+    /* Reduz a altura mínima para consistência */
+    background: var(--cor-secundaria);
+    color: var(--cor-texto);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    /* Define o card como flex container */
+    justify-content: center;
+    /* Centraliza horizontalmente */
+    align-items: center;
+    /* Centraliza verticalmente */
+    text-decoration: none;
+    /* Garante que o sublinhado seja removido */
+}
+
+.estoque-card h3 {
+    margin: 0;
+    /* Remove margens para alinhamento perfeito */
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+    text-decoration: none;
+    text-align: center;
+}
+
+.status-text {
+    font-size: 0.95rem;
+    color: var(--cor-texto);
+}
+
+.card-link {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--cor-botao);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.chart-column {
+    flex: none;
+    /* Garante que o gráfico não se expanda */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Centraliza o gráfico horizontalmente */
+}
+
+.chart-card {
+    /* remover fundo e sombra para deixar o gráfico mais limpo */
+    background: transparent;
+    padding: 6px 8px;
+    /* padding reduzido */
+    border-radius: 6px;
+    box-shadow: none;
+    width: 100%;
+    max-width: 520px;
+    /* limita largura do gráfico para centralizar melhor */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chart-card canvas {
+    max-width: 100%;
+    height: 300px;
+    /* Aumenta ainda mais a altura do gráfico */
+}
+
+/* Canvas maior específico para a seção financeiro (evita ajustes inline e reflow) */
+#financeiro .chart-card canvas {
+    height: 300px;
+    /* igual ao .chart-card canvas padrão */
+}
+
+/* Adiciona espaçamento entre o título e o gráfico */
+.chart-title {
+    margin-bottom: 20px;
+    color: var(--cor-texto);
+    /* Aumenta o espaçamento abaixo do título */
+}
+
+.pie-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--cor-texto);
+}
+
+.pie-legend .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.legend-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+}
+
+@media (max-width: 900px) {
+    .estoque-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-card canvas {
+        height: 200px;
+    }
+}
+
+/* =====================
+        Pedidos
+===================== */
+
+#pedidos {
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background: var(--cor-fundo);
+    transition: var(--tran-05);
+}
+
+/* =====================
+        Pedidos (UI)
+===================== */
+
+.pedidos-container {
+    width: 100%;
+    padding: 20px 40px;
+}
+
+/* =====================
+   Modal simples para mensagens de Pedido
+   (inspirado no modal-card do template de login)
+===================== */
+.pedido-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2200;
+}
+
+.pedido-modal-card {
+    background: var(--cor-secundaria);
+    border-radius: 8px;
+    border: 10px solid var(--cor-fundo);
+    /* aumento ~10% nas dimensões/padding */
+    padding: 22px 24px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+    /* 10% maior que 520px */
+    max-width: 572px;
+    width: 92%;
+    color: var(--cor-texto);
+    position: relative;
+    box-sizing: border-box;
+    /* fonte 10% maior */
+    font-size: 1.1rem;
+}
+
+.pedido-modal-card .modal-close {
+    position: absolute;
+    right: 12px;
+    top: 8px;
+    background: transparent;
+    border: none;
+    font-size: 22px;
+    /* 10% maior */
+    cursor: pointer;
+    color: var(--cor-texto);
+}
+
+.pedido-modal-card .modal-title {
+    margin: 6px 0 10px 0;
+    font-weight: 700;
+    font-size: 1.155rem;
+    /* 10% maior que 1.05rem */
+}
+
+.pedido-modal-card .modal-content {
+    line-height: 1.4;
+    color: var(--cor-texto);
+}
+
+/* variações por tipo */
+.pedido-modal-card.success {
+    border-left: 6px solid #28a745;
+}
+
+.pedido-modal-card.error {
+    border-left: 6px solid #dc3545;
+}
+
+.pedido-modal-card.info {
+    border-left: 6px solid #0d6efd;
+}
+
+
+.identificacao-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    color: var(--cor-texto);
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.form-group input[type="text"] {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: #fff;
+    color: #111;
+}
+
+.pedido-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+}
+
+/* Total do Pedido (movido de inline style) */
+#pedido-total-display {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    color: #111;
+}
+
+.sub-title {
+    color: var(--cor-texto);
+    font-size: 1.3rem;
+    margin: 8px 0 12px;
+}
+
+/* Produtos */
+.produtos-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.produto-card {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 12px;
+}
+
+.icon-square {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: var(--cor-botao);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-square i {
+    color: var(--cor-secundaria);
+    font-size: 1.4rem;
+}
+
+.produto-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.produto-nome {
+    color: #111;
+    font-weight: 700;
+}
+
+.qty-controls {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-qty {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: none;
+    background: var(--cor-botao);
+    color: var(--cor-secundaria);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.qty {
+    min-width: 22px;
+    text-align: center;
+    color: #111;
+    font-weight: 700;
+}
+
+/* Pagamentos */
+.pagamentos-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.pagamento-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    /* ícone | info | check */
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+}
+
+.pagamento-card input[type="radio"] {
+    display: none;
+    /* esconder nativo */
+}
+
+.pagamento-info .pagamento-nome {
+    color: #111;
+    font-weight: 700;
+}
+
+.checkmark {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.06);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #0a0;
+    opacity: 0.25;
+    /* só destaca quando checado */
+    transition: opacity 0.12s ease;
+}
+
+.pagamento-card input:checked~.checkmark {
+    opacity: 1;
+    background: rgba(0, 128, 0, 0.1);
+}
+
+.submit-wrap {
+    margin-top: 18px;
+    display: block;
+}
+
+.btn-submit {
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: none;
+    background: var(--cor-botao);
+    color: var(--cor-secundaria);
+    font-weight: 800;
+    cursor: pointer;
+    width: 100%;
+    /* ocupar toda a largura da coluna (igual aos cards) */
+}
+
+@media (max-width: 900px) {
+    .identificacao-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pedido-main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================
+        Confirmar Pagamento
+============================== */
+
+#confirmarpagamento {
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background: var(--cor-fundo);
+    transition: var(--tran-05);
+}
+
+/* =====================
+        Financeiro        
+===================== */
+
+#financeiro {
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background: var(--cor-fundo);
+    transition: var(--tran-05);
+}
+
+#financeiro .estoque-card {
+    background: var(--cor-secundaria);
+    color: var(--cor-texto);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+#financeiro .status-icon {
+    font-size: 2rem;
+    color: var(--cor-botao);
+    margin-bottom: 10px;
+}
+
+#financeiro .chart-card {
+    background: transparent;
+    padding: 6px 8px;
+    border-radius: 6px;
+    box-shadow: none;
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#financeiro .chart-card canvas {
+    max-width: 100%;
+    height: 300px;
+}
+
+#financeiro .pie-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+#financeiro .pie-legend .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#financeiro .legend-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+}
+
+/* =====================
+    Usado para testes       
+===================== */
+
+
+.teste-container {
+    text-align: center;
+    width: 90%;
+    max-width: 1000px;
+}
+
+.teste-title {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--cor-texto);
+    margin-bottom: 40px;
+}
+
+/* Estilo para o card 'Status do estoque' */
+.status-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: var(--cor-secundaria);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para o cabeçalho do card 'Status do estoque' */
+.status-card .status-header {
+    display: flex;
+    align-items: center;
+    /* Alinha verticalmente o ícone e o título */
+    gap: 10px;
+    /* Espaçamento entre o ícone e o título */
+    margin-bottom: 10px;
+    /* Espaçamento abaixo do cabeçalho */
+}
+
+.status-card .status-icon {
+    font-size: 2rem;
+    /* Tamanho do ícone */
+    color: var(--cor-botao);
+}
+
+.status-card h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    /* Remove margens para alinhamento perfeito */
+}
+
+.status-card .text-nivel {
+    font-size: 1rem;
+    color: var(--cor-texto);
+    text-align: center;
+}
+
+/* =====================
+   Entrega Atual
+===================== */
+/* Ensure 'entrega-card' is vertically centered and title sits above the card */
+#entregaatual {
+    flex-direction: column;
+    /* stack title above the card */
+    justify-content: center;
+    /* center vertically */
+    align-items: center;
+    /* center horizontally */
+    height: 100vh;
+    /* Full viewport height to center vertically */
+}
+
+/* Add spacing between the title and the card */
+#entregaatual .section-title {
+    margin-bottom: 20px;
+    /* Space below the title */
+    text-align: center;
+    /* Center the title text */
+}
+
+.entrega-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 117%;
+    /* 30% larger than the original 90% */
+    max-width: 520px;
+    /* Adjusted proportionally */
+    height: auto;
+    margin: auto;
+    padding: 26px;
+    /* Increased padding for larger size */
+    background: var(--cor-secundaria);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.card-header i {
+    font-size: 2.5rem;
+    color: var(--cor-botao);
+    margin-bottom: 10px;
+}
+
+.card-info p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: var(--cor-texto);
+}
+
+/* Align the card info (endereço, destinatário) to the left */
+.card-header .card-info {
+    width: 100%;
+    text-align: left;
+    padding-left: 6px;
+    /* small left padding so text doesn't touch the edge */
+}
+
+.card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.card-actions .btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* align inner content to the left */
+    gap: 8px;
+    padding: 12px 16px;
+    /* give horizontal padding so text doesn't touch edge */
+    width: 100%;
+    /* make buttons full width of the card-actions container */
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--cor-secundaria);
+    background: var(--cor-botao);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: none;
+    text-align: left;
+    /* ensure multi-line text aligns left */
+}
+
+/* Ensure icons inside buttons are visible and styled */
+.btn-icon {
+    font-size: 1.2rem;
+    /* Adjust icon size */
+    color: var(--cor-secundaria);
+    /* Match button text color */
+    margin-right: 8px;
+    /* Add spacing between icon and text */
+}
+
+/* Style the container for title and card */
+.entrega-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    /* Space between title and card */
+    width: 100%;
+}
+
+/* =====================
+   Entregas Pendentes (estilização específica)
+===================== */
+
+#entregapendentes {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 40px 0;
+    min-height: calc(100vh - 80px);
+    background: var(--cor-fundo);
+}
+
+
+.entrega-lista-wrap {
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.entrega-lista {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    /* uma coluna */
+    gap: 16px;
+    align-items: stretch;
+    max-height: calc(100vh - 240px);
+    overflow-y: auto;
+    padding-right: 8px;
+    /* espaço para scrollbar */
+}
+
+/* Scrollbar visual (Webkit) */
+.entrega-lista::-webkit-scrollbar {
+    width: 10px;
+}
+
+.entrega-lista::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.entrega-lista::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+}
+
+/* Ajustes visuais para os cards dentro de entregas pendentes */
+#entregapendentes .card {
+    align-items: flex-start;
+    padding: 18px;
+    display: flex;
+    gap: 12px;
+    min-height: 110px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+#entregapendentes .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14);
+}
+
+#entregapendentes .card .icon {
+    font-size: 2.2rem;
+    min-width: 48px;
+    color: var(--cor-botao);
+    margin: 0;
+}
+
+#entregapendentes .card>h2 {
+    font-size: 1.05rem;
+    margin: 0 0 6px 0;
+    color: var(--cor-texto);
+}
+
+#entregapendentes .card>p {
+    margin: 0;
+    color: var(--cor-texto);
+    opacity: 0.95;
+    font-size: 0.95rem;
+}
+
+.entrega-card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* =====================
+   Cliente (admin) - lista e botões
+===================== */
+
+.cliente-buttons {
+    width: 90%;
+    max-width: 900px;
+    margin: 10px auto 20px auto;
+    display: flex;
+    justify-content: center;
+}
+
+/* Botões de ação (Cadastrar / Buscar) - aparência moderna */
+
+.cliente-buttons .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    font-weight: 700;
+    color: #111;
+    /* texto preto */
+    background: #ffffff;
+    /* fundo branco */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.cliente-buttons .action-btn i {
+    font-size: 1.2rem;
+    color: #111;
+    /* ícone preto */
+}
+
+.cliente-buttons .action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.10);
+    background: #fafafa;
+    /* leve escurecimento no hover */
+}
+
+.cliente-buttons .action-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Em telas pequenas, botões empilham */
+@media (max-width: 560px) {
+    .cliente-buttons {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.cliente-lista-wrap {
+    width: 90%;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.cliente-lista {
+    list-style: disc;
+    padding-left: 20px;
+    margin: 0;
+    background: transparent;
+    border-radius: 8px;
+    max-height: calc(60vh - 80px);
+    /* reduzir largura interna para deslocar a barra um pouco à direita */
+    width: calc(100% - 12px);
+    overflow-y: auto;
+    padding: 12px 24px 12px 16px;
+    /* mais espaço à direita */
+    /* correspondência visual com .entrega-lista: scrollbar sutil visível */
+    scrollbar-width: thin;
+    /* firefox */
+    scrollbar-color: rgba(0, 0, 0, 0.12) transparent;
+    /* firefox: thumb, track */
+}
+
+.cliente-lista li {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    color: var(--cor-texto);
+}
+
+.cliente-lista li:last-child {
+    border-bottom: none;
+}
+
+/* WebKit: tornar scrollbar transparente para a lista de clientes */
+.cliente-lista::-webkit-scrollbar {
+    width: 10px;
+}
+
+.cliente-lista::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cliente-lista::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+}
+
+@media (max-width: 800px) {
+    .cliente-buttons {
+        display: flex;
+        justify-content: center;
+    }
+
+    .cliente-lista {
+        max-height: calc(50vh - 80px);
+    }
+}
+
+.card .card-actions-inline {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+.card .small-btn {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: none;
+    background: var(--cor-botao);
+    color: var(--cor-secundaria);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+/* Controles de scroll (botões) */
+.scroll-controls {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 20;
+}
+
+.small-scroll {
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--cor-texto);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.small-scroll:hover {
+    background: rgba(0, 0, 0, 0.10);
+}
+
+/* Responsividade: 2 colunas em telas médias, 1 coluna em telas pequenas */
+@media (max-width: 1000px) {
+    #entregapendentes .dashboard-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    #entregapendentes .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    #entregapendentes .card {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .card .card-actions-inline {
+        flex-wrap: wrap;
+    }
+}

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE-edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/static/themeVar.css" />
+        <link rel="stylesheet" href="/static/dashboardDynamic.css" />
+
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/boxicons@latest/css/boxicons.min.css"
+        />
+
+        <title>Dashboard Admin</title>
+    </head>
+    <body class="tema-rosa">
+        <nav class="sidebar close">
+            <header>
+                <div class="image-text">
+                    <span class="image">
+                        <img
+                            src="/static/img/logo-placeholder.png"
+                            alt="logo"
+                        />
+                    </span>
+
+                    <div class="text header-text">
+                        <span class="name">Ultra GÁS</span>
+                        <span class="profession">Distribuidora</span>
+                    </div>
+                </div>
+
+                <i class="bx bx-chevron-right toggle"></i>
+            </header>
+
+            <div class="menu-bar">
+                <div class="menu">
+                    <ul class="menu-links">
+                        <li class="nav-link">
+                            <a href="#">
+                                <i class="bx bx-home-alt icon"></i>
+                                <span class="text nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="#">
+                                <i class="bx bxs-truck icon"></i>
+                                <span class="text nav-text">Entrega Atual</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="#">
+                                <i class="bx bx-cart icon"></i>
+                                <span class="text nav-text"
+                                    >Entregas Pendentes</span
+                                >
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="#">
+                                <i class="bx bx-history icon"></i>
+                                <span class="text nav-text"
+                                    >Histórico de Entregas</span
+                                >
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bottom-content">
+                    <li class="">
+                        <a href="/logout">
+                            <i class="bx bx-log-out icon"></i>
+                            <span class="text nav-text">Logout</span>
+                        </a>
+                    </li>
+                </div>
+            </div>
+        </nav>
+
+        <section class="home">
+            <!-- CSS Estilo da primeira aba do admin dashboard -->
+            <div id="dashboard" class="conteudo ativo">
+                <div class="dashboard-container">
+                    <h1 class="welcome-text">Bem-vindo, Usuário!</h1>
+
+                    <div class="dashboard-cards">
+                        <div class="card">
+                            <i class="bx bxs-truck icon"></i>
+                            <h2>Entrega Atual</h2>
+                            <span id="cardEntregaAtualNumber" class="number"
+                                >0</span
+                            >
+                        </div>
+
+                        <div class="card">
+                            <i class="bx bx-cart icon"></i>
+                            <h2>Entregas Pendentes</h2>
+                            <span
+                                id="cardEntregasPendentesNumber"
+                                class="number"
+                                >0</span
+                            >
+                        </div>
+
+                        <button
+                            type="button"
+                            id="cardRelatarProblema"
+                            class="card card-button"
+                        >
+                            <i class="bx bx-x-circle icon"></i>
+                            <h2>Relatar algum problema</h2>
+                        </button>
+
+                        <div class="card">
+                            <i class="bx bx-check-circle icon"></i>
+                            <h2>Entregas Concluídas</h2>
+                            <span
+                                id="cardEntregasConcluidasNumber"
+                                class="number"
+                                >0</span
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CSS Estilo da segunda aba do admin dashboard -->
+            <div id="entregaatual" class="conteudo">
+                <div class="entrega-container">
+                    <h1 class="section-title">Entrega Atual</h1>
+                    <div class="entrega-lista-wrap">
+                        <div id="lista-entrega-atual" class="entrega-lista">
+                            Carregando...
+                        </div>
+                        <div class="scroll-controls" aria-hidden="false">
+                            <button
+                                id="scroll-up-atual"
+                                class="small-scroll"
+                                aria-label="Rolar para cima"
+                            >
+                                ▲
+                            </button>
+                            <button
+                                id="scroll-down-atual"
+                                class="small-scroll"
+                                aria-label="Rolar para baixo"
+                            >
+                                ▼
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="entregaspendentes" class="conteudo">
+                <div class="entrega-container">
+                    <h1 class="section-title">Entregas Pendentes</h1>
+                    <div class="entrega-lista-wrap">
+                        <div id="lista-entregas" class="entrega-lista">
+                            Carregando...
+                        </div>
+                        <div class="scroll-controls" aria-hidden="false">
+                            <button
+                                id="scroll-up"
+                                class="small-scroll"
+                                aria-label="Rolar para cima"
+                            >
+                                ▲
+                            </button>
+                            <button
+                                id="scroll-down"
+                                class="small-scroll"
+                                aria-label="Rolar para baixo"
+                            >
+                                ▼
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="historicodeentregas" class="conteudo">
+                <div class="entrega-container">
+                    <h1 class="section-title">Histórico de Entregas</h1>
+                    <div class="entrega-lista-wrap">
+                        <div id="lista-historico" class="entrega-lista">
+                            Carregando...
+                        </div>
+                        <div class="scroll-controls" aria-hidden="false">
+                            <button
+                                id="scroll-up-hist"
+                                class="small-scroll"
+                                aria-label="Rolar histórico para cima"
+                            >
+                                ▲
+                            </button>
+                            <button
+                                id="scroll-down-hist"
+                                class="small-scroll"
+                                aria-label="Rolar histórico para baixo"
+                            >
+                                ▼
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script src="/static/js/dashboardDynamic.js"></script>
+        <script src="/static/js/entregaAtual.js"></script>
+        <script src="/static/js/entregasPendentes.js"></script>
+        <script src="/static/js/historicoEntregas.js"></script>
+    </body>
+</html>
