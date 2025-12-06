@@ -17,18 +17,28 @@ def init_test_users():
                 name='Administrador',
                 email='admin@example.com',
                 password=generate_password_hash('admin123'),
+                enviroment='Administrador de Ambiente',
                 user_type='admin'
             )
             user = User(
                 name='Usuário de Teste',
                 email='user@example.com',
                 password=generate_password_hash('user123'),
+                enviroment='Administrador de Ambiente',
                 user_type='user'
+            )
+            ambiente = User(
+                name='Administrador de Ambiente',
+                email='ambienteuser@example.com',
+                password=generate_password_hash('ambienteuser123'),
+                enviroment='Administrador de Ambiente',
+                user_type='ambiente'
             )
             db.session.add(admin)
             db.session.add(user)
+            db.session.add(ambiente)
             db.session.commit()
-            print('Usuário admin e usuário comum criados (admin@example.com/admin123, user@example.com/user123)')
+            print('Usuário admin e usuário comum criados (admin@example.com/admin123, user@example.com/user123, ambienteuser@example.com/ambienteuser123)')
         else:
             print('Usuários já existem')
 

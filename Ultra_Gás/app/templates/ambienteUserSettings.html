@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE-edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/static/themeVar.css" />
+        <link rel="stylesheet" href="/static/dashboardDynamic.css" />
+
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/boxicons@latest/css/boxicons.min.css"
+        />
+
+        <title>Dashboard Admin</title>
+    </head>
+    <body class="tema-rosa">
+        <nav class="sidebar close">
+            <header>
+                <div class="image-text">
+                    <span class="image">
+                        <img
+                            src="/static/img/logo-placeholder.png"
+                            alt="logo"
+                        />
+                    </span>
+
+                    <div class="text header-text">
+                        <span class="name">Ultra GÁS</span>
+                        <span class="profession">Distribuidora</span>
+                    </div>
+                </div>
+
+                <i class="bx bx-chevron-right toggle"></i>
+            </header>
+
+            <div class="menu-bar">
+                <div class="menu">
+                    <ul class="menu-links">
+                        <li class="nav-link">
+                            <a href="#">
+                                <i class="bx bx-group icon"></i>
+                                <span class="text nav-text">Registrar</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="#">
+                                <i class="bx bx-palette icon"></i>
+                                <span class="text nav-text">Alterar cor</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bottom-content">
+                    <li class="">
+                        <a href="/logout">
+                            <i class="bx bx-log-out icon"></i>
+                            <span class="text nav-text">Logout</span>
+                        </a>
+                    </li>
+                </div>
+            </div>
+        </nav>
+
+        <section class="home">
+            <!-- CSS Estilo da primeira aba do admin dashboard -->
+            <div id="registrar" class="conteudo ativo"></div>
+
+            <div id="alterarcor" class="conteudo"></div>
+        </section>
+
+        <script src="/static/js/dashboardDynamic.js"></script>
+    </body>
+</html>

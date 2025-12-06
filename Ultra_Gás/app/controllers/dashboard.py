@@ -24,6 +24,8 @@ def show_dashboard():
 
     if user_type == 'admin':
         return render_template('dashboard_admin.html', user_name=user_name)
+    elif user_type == 'ambiente':
+        return render_template('ambienteUserSettings.html', user_name=user_name)
     else:
         return render_template('dashboard.html', user_name=user_name)
 

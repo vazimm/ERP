@@ -1,0 +1,1 @@
+#Armazena as variaveis de cor utilizadas no sistema

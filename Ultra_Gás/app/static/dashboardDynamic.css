@@ -1264,3 +1264,19 @@ header .image-text .header-text {
         flex-wrap: wrap;
     }
 }
+
+/* ====================================
+       Dashboard Ambiente de usuario      
+===================================== */
+
+#registrar {
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+#alterarcor {
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
