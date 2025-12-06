@@ -5,6 +5,23 @@
         <meta http-equiv="X-UA-Compatible" content="IE-edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="/static/dashboardDynamic.css" />
+        {% if theme_vars %}
+        <style>
+            :root {
+                --cor-fundo: {{ theme_vars['cor-fundo'] }};
+                --cor-texto: {{ theme_vars['cor-texto'] }};
+                --cor-botao-texto: {{ theme_vars['cor-botao-texto'] }};
+                --cor-primaria: {{ theme_vars['cor-primaria'] }};
+                --cor-secundaria: {{ theme_vars['cor-secundaria'] }};
+                --cor-botao: {{ theme_vars['cor-botao'] }};
+                --tran-02: {{ theme_vars['tran-02'] }};
+                --tran-03: {{ theme_vars['tran-03'] }};
+                --tran-04: {{ theme_vars['tran-04'] }};
+                --tran-05: {{ theme_vars['tran-05'] }};
+            }
+        </style>
+        {% endif %}
+        <script src="/static/js/theme.js" defer></script>
 
         <link
             rel="stylesheet"
@@ -209,6 +226,5 @@
         <script src="/static/js/entregaAtual.js"></script>
         <script src="/static/js/entregasPendentes.js"></script>
         <script src="/static/js/historicoEntregas.js"></script>
-        <script src="/static/js/theme.js"></script>
     </body>
 </html>

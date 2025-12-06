@@ -417,3 +417,149 @@ def api_apply_theme(tema):
     # Apenas grava na sessão; a aplicação do tema é via JS/CSS.
     session['current_theme'] = tema
     return jsonify({'ok': True, 'tema': tema})
+
+
+@api_bp.route('/themes/custom', methods=['POST'])
+def api_create_custom_theme():
+    """Cria ou atualiza um tema para o ambiente do usuário de ambiente.
+
+    Espera JSON:
+    {
+      "tema": "nome_tema",
+      "cores": {
+         "cor-fundo": "#ffffff",
+         ...
+      }
+    }
+    Remove entradas anteriores com mesmo (enviroment, tema) e recria.
+    """
+    from app import db
+    from app.models.color import Color
+
+    env = session.get('enviroment')
+    if not env:
+        return jsonify({'error': 'Ambiente não encontrado na sessão'}), 401
+
+    try:
+        data = request.get_json(force=True) or {}
+    except Exception:
+        return jsonify({'error': 'JSON inválido'}), 400
+
+    tema = (data.get('tema') or '').strip()
+    cores = data.get('cores') or {}
+
+    if not tema:
+        return jsonify({'error': 'Campo tema é obrigatório'}), 400
+    if not isinstance(cores, dict) or not cores:
+        return jsonify({'error': 'Campo cores é obrigatório'}), 400
+
+    try:
+        # Remove qualquer tema anterior com mesmo nome para este ambiente
+        Color.query.filter_by(enviroment=env, tema=tema).delete()
+
+        # Cria novas entradas para cada variável de cor
+        novos = []
+        for nome_var, valor in cores.items():
+            if not valor:
+                continue
+            novos.append(
+                Color(
+                    nome_variavel=nome_var,
+                    valor_padrao=str(valor),
+                    tema=tema,
+                    enviroment=env,
+                )
+            )
+
+        if not novos:
+            return jsonify({'error': 'Nenhuma cor válida informada'}), 400
+
+        db.session.add_all(novos)
+        db.session.commit()
+        return jsonify({'ok': True, 'tema': tema}), 201
+    except Exception as e:
+        try:
+            db.session.rollback()
+        except Exception:
+            pass
+        return jsonify({'error': 'Falha ao salvar tema', 'detail': str(e)}), 500
+
+
+@api_bp.route('/themes/list-names', methods=['GET'])
+def api_list_theme_names():
+    """Lista apenas os nomes de tema disponíveis para o ambiente do usuário."""
+    from app import db
+    from app.models.color import Color
+
+    env = session.get('enviroment')
+    if not env:
+        return jsonify({'temas': []})
+
+    try:
+        rows = (
+            db.session.query(Color.tema)
+            .filter(Color.enviroment == env)
+            .distinct()
+            .all()
+        )
+        temas = sorted({r[0] for r in rows if r[0]})
+        return jsonify({'temas': list(temas)})
+    except Exception as e:
+        return jsonify({'error': 'Falha ao listar temas', 'detail': str(e)}), 500
+
+
+@api_bp.route('/themes/apply-to-env', methods=['POST'])
+def api_apply_theme_to_env():
+    """Define o tema para todos os usuários de um mesmo enviroment.
+
+    Espera JSON: { "tema": "nome_tema" }
+    Atualiza User.tema de todos os usuários com User.enviroment == env atual.
+    """
+    from app import db
+    from app.models.users import User
+
+    env = session.get('enviroment')
+    if not env:
+        return jsonify({'error': 'Ambiente não encontrado na sessão'}), 401
+
+    try:
+        data = request.get_json(force=True) or {}
+    except Exception:
+        return jsonify({'error': 'JSON inválido'}), 400
+
+    tema = (data.get('tema') or '').strip()
+    if not tema:
+        return jsonify({'error': 'Campo tema é obrigatório'}), 400
+
+    try:
+        db.session.query(User).filter(User.enviroment == env).update({User.tema: tema})
+        db.session.commit()
+        # Também salva na sessão do usuário atual
+        session['current_theme'] = tema
+        return jsonify({'ok': True, 'tema': tema})
+    except Exception as e:
+        try:
+            db.session.rollback()
+        except Exception:
+            pass
+        return jsonify({'error': 'Falha ao aplicar tema ao ambiente', 'detail': str(e)}), 500
+
+
+@api_bp.route('/current-theme', methods=['GET'])
+def api_current_theme():
+    """Retorna o tema atual do usuário (coluna User.tema), com fallback para 'root'."""
+    from app.models.users import User
+
+    user_id = session.get('user_id')
+    if not user_id:
+        # se não logado, usa tema salvo na sessão (se houver) ou root
+        tema = session.get('current_theme') or 'root'
+        return jsonify({'tema': tema})
+
+    try:
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'tema': 'root'})
+        return jsonify({'tema': user.tema or 'root'})
+    except Exception:
+        return jsonify({'tema': 'root'})

@@ -3,6 +3,8 @@ from app import db
 from app.models.estoque import Estoque
 from app.models.clientes import Cliente
 from app.models.entregas import Entrega
+from app.models.color import Color
+from app.models.users import User
 
 # Nota: o limite máximo do estoque (capacidade) está definido em
 # `app/models/estoque.py` como DEFAULT_CAPACITY (atualmente 250).
@@ -14,6 +16,64 @@ from app.models.entregas import Entrega
 dashboard_bp = Blueprint('dashboard', __name__, url_prefix='/dashboard')
 
 
+def _get_theme_vars():
+    """Monta o dicionário de variáveis de tema para o usuário logado.
+
+    Retorna algo como:
+    {
+      "cor-fundo": "#ffffff",
+      "cor-texto": "#000000",
+      ...
+    }
+
+    Usa User.tema + enviroment da sessão para buscar em Color.
+    Se não encontrar nada, tenta fallback global (enviroment NULL).
+    """
+    # Valores padrão mínimos para evitar falta de chave no template
+    defaults = {
+        "cor-fundo": "#ffffff",
+        "cor-texto": "#000000",
+        "cor-botao-texto": "#000000",
+        "cor-primaria": "#bbbbbb",
+        "cor-secundaria": "#ffffff",
+        "cor-botao": "#bbbbbb",
+        "tran-02": "all 0.2s ease",
+        "tran-03": "all 0.3s ease",
+        "tran-04": "all 0.4s ease",
+        "tran-05": "all 0.5s ease",
+    }
+
+    env = session.get('enviroment')
+    user_id = session.get('user_id')
+    tema = 'root'
+    if user_id:
+        user = User.query.get(user_id)
+        if user and user.tema:
+            tema = user.tema
+
+    # 1) tenta buscar cores específicas do ambiente + tema do usuário
+    cores = []
+    if env:
+        cores = Color.query.filter_by(enviroment=env, tema=tema).all()
+
+    # 2) se não encontrar, tenta globais para o tema
+    if not cores:
+        cores = Color.query.filter(Color.enviroment.is_(None), Color.tema == tema).all()
+
+    # 3) se ainda não encontrar nada, tenta globais do root
+    if not cores:
+        cores = Color.query.filter(Color.enviroment.is_(None), Color.tema == 'root').all()
+
+    result = dict(defaults)
+    for c in cores:
+        valor = c.valor_atual or c.valor_padrao
+        if not valor:
+            continue
+        result[c.nome_variavel] = valor
+
+    return result
+
+
 @dashboard_bp.route('/', methods=['GET'])
 def show_dashboard():
     user_type = session.get('user_type')
@@ -21,13 +81,14 @@ def show_dashboard():
         return redirect(url_for('auth.index'))
 
     user_name = session.get('user_name', 'Usuário')
+    theme_vars = _get_theme_vars()
 
     if user_type == 'admin':
-        return render_template('dashboard_admin.html', user_name=user_name)
+        return render_template('dashboard_admin.html', user_name=user_name, theme_vars=theme_vars)
     elif user_type == 'ambiente':
-        return render_template('ambienteUserSettings.html', user_name=user_name)
+        return render_template('ambienteUserSettings.html', user_name=user_name, theme_vars=theme_vars)
     else:
-        return render_template('dashboard.html', user_name=user_name)
+        return render_template('dashboard.html', user_name=user_name, theme_vars=theme_vars)
 
 
 @dashboard_bp.route('/entrega-atual', methods=['GET'])

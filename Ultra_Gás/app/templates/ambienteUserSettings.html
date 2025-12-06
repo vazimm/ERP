@@ -5,6 +5,23 @@
         <meta http-equiv="X-UA-Compatible" content="IE-edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="/static/dashboardDynamic.css" />
+        {% if theme_vars %}
+        <style>
+            :root {
+                --cor-fundo: {{ theme_vars['cor-fundo'] }};
+                --cor-texto: {{ theme_vars['cor-texto'] }};
+                --cor-botao-texto: {{ theme_vars['cor-botao-texto'] }};
+                --cor-primaria: {{ theme_vars['cor-primaria'] }};
+                --cor-secundaria: {{ theme_vars['cor-secundaria'] }};
+                --cor-botao: {{ theme_vars['cor-botao'] }};
+                --tran-02: {{ theme_vars['tran-02'] }};
+                --tran-03: {{ theme_vars['tran-03'] }};
+                --tran-04: {{ theme_vars['tran-04'] }};
+                --tran-05: {{ theme_vars['tran-05'] }};
+            }
+        </style>
+        {% endif %}
+        <script src="/static/js/theme.js" defer></script>
 
         <link
             rel="stylesheet"
@@ -65,10 +82,162 @@
             <!-- CSS Estilo da primeira aba do admin dashboard -->
             <div id="registrar" class="conteudo ativo"></div>
 
-            <div id="alterarcor" class="conteudo"></div>
+            <div id="alterarcor" class="conteudo alterarcor-wrapper">
+                <div class="estoque-container alterarcor-container">
+                    <div class="pedidos-container alterarcor-card">
+                        <h1
+                            class="section-title"
+                            style="text-align: center; margin-bottom: 20px"
+                        >
+                            Gerenciar temas do ambiente
+                        </h1>
+
+                        <!-- Formulário para criar/atualizar um tema -->
+                        <form id="form-criar-tema" autocomplete="off">
+                            <h2 class="sub-title">
+                                Cadastrar / atualizar tema
+                            </h2>
+
+                            <div
+                                class="identificacao-grid alterarcor-identificacao"
+                            >
+                                <div
+                                    class="form-group alterarcor-nome-tema-group"
+                                >
+                                    <label for="nome-tema">Nome do tema</label>
+                                    <input
+                                        type="text"
+                                        id="nome-tema"
+                                        name="nome_tema"
+                                        placeholder="Ex: rosa-admin"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="pedido-main-grid">
+                                <div class="form-group">
+                                    <label for="cor-fundo">Cor de fundo</label>
+                                    <div class="color-input-wrapper">
+                                        <input
+                                            type="color"
+                                            id="cor-fundo"
+                                            name="cor-fundo"
+                                            value="#ffffff"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cor-texto">Cor do texto</label>
+                                    <div class="color-input-wrapper">
+                                        <input
+                                            type="color"
+                                            id="cor-texto"
+                                            name="cor-texto"
+                                            value="#000000"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cor-botao-texto"
+                                        >Texto do botão</label
+                                    >
+                                    <div class="color-input-wrapper">
+                                        <input
+                                            type="color"
+                                            id="cor-botao-texto"
+                                            name="cor-botao-texto"
+                                            value="#000000"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cor-primaria"
+                                        >Cor primária</label
+                                    >
+                                    <div class="color-input-wrapper">
+                                        <input
+                                            type="color"
+                                            id="cor-primaria"
+                                            name="cor-primaria"
+                                            value="#bbbbbb"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cor-secundaria"
+                                        >Cor secundária</label
+                                    >
+                                    <div class="color-input-wrapper">
+                                        <input
+                                            type="color"
+                                            id="cor-secundaria"
+                                            name="cor-secundaria"
+                                            value="#ffffff"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cor-botao">Cor do botão</label>
+                                    <div class="color-input-wrapper">
+                                        <input
+                                            type="color"
+                                            id="cor-botao"
+                                            name="cor-botao"
+                                            value="#bbbbbb"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="submit-wrap alterarcor-submit">
+                                <button
+                                    type="submit"
+                                    class="btn-submit alterarcor-btn"
+                                >
+                                    Salvar tema
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Seletor para aplicar tema a todos usuários do ambiente -->
+                        <div class="pedidos-container alterarcor-apply-block">
+                            <h2 class="sub-title">Aplicar tema ao ambiente</h2>
+                            <div
+                                class="identificacao-grid alterarcor-identificacao"
+                            >
+                                <div
+                                    class="form-group alterarcor-nome-tema-group"
+                                >
+                                    <label for="select-temas"
+                                        >Temas cadastrados</label
+                                    >
+                                    <select
+                                        id="select-temas"
+                                        class="form-select alterarcor-select"
+                                    >
+                                        <option value="">
+                                            Selecione um tema
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="submit-wrap alterarcor-submit">
+                                <button
+                                    type="button"
+                                    id="btn-aplicar-tema"
+                                    class="btn-submit alterarcor-btn"
+                                >
+                                    Aplicar para todos usuários do ambiente
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <script src="/static/js/dashboardDynamic.js"></script>
-        <script src="/static/js/theme.js"></script>
+        <script src="/static/js/temaAmbiente.js"></script>
     </body>
 </html>

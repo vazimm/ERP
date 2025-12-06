@@ -1280,3 +1280,94 @@ header .image-text .header-text {
     align-items: center;
     height: 100%;
 }
+
+/* ==============================
+   Dashboard Ambiente - Alterar Cor
+============================== */
+
+.alterarcor-wrapper {
+    display: flex;
+}
+
+.alterarcor-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+}
+
+.alterarcor-card {
+    max-width: 720px;
+    width: 100%;
+    background-color: var(--cor-secundaria);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 24px 28px 28px;
+}
+
+.alterarcor-identificacao {
+    display: flex;
+    justify-content: center;
+}
+
+.alterarcor-nome-tema-group {
+    max-width: 520px;
+    width: 100%;
+    text-align: center;
+}
+
+.alterarcor-nome-tema-group input[type="text"] {
+    text-align: center;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    font-size: 1rem;
+}
+
+.color-input-wrapper {
+    position: relative;
+    width: 100%;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.color-input-wrapper input[type="color"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.alterarcor-submit {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.alterarcor-apply-block {
+    margin-top: 30px;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+}
+
+.alterarcor-select {
+    text-align: center;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.alterarcor-btn {
+    width: 90%;
+    font-size: 1rem;
+}

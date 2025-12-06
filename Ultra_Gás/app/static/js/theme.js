@@ -21,8 +21,22 @@ async function aplicarTemaDinamico() {
         if (!respTemas.ok) return;
         const temas = await respTemas.json();
 
+        // Busca o tema atual do usuário a partir da API
+        let temaUsuario = 'root';
+        try {
+            const respTemaUser = await fetch('/api/current-theme');
+            if (respTemaUser.ok) {
+                const data = await respTemaUser.json();
+                if (data && data.tema) {
+                    temaUsuario = String(data.tema).toLowerCase();
+                }
+            }
+        } catch (e) {
+            console.error('Falha ao obter tema do usuário, usando root', e);
+        }
+
         const body = document.body;
-        const temaAtual = (body.dataset.theme || body.className || 'root').toLowerCase();
+        const temaAtual = (body.dataset.theme || temaUsuario || body.className || 'root').toLowerCase();
         const varsTema = temas[temaAtual] || temas['root'] || {};
         const root = document.documentElement;
 
