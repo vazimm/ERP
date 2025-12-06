@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, redirect, url_for, jsonify
+from flask import Blueprint, render_template, session, redirect, url_for, jsonify, abort
 from app import db
 from app.models.estoque import Estoque
 from app.models.clientes import Cliente
@@ -77,7 +77,9 @@ def _get_theme_vars():
 @dashboard_bp.route('/', methods=['GET'])
 def show_dashboard():
     user_type = session.get('user_type')
-    if not user_type:
+    user_id = session.get('user_id')
+
+    if not user_type or not user_id:
         return redirect(url_for('auth.index'))
 
     user_name = session.get('user_name', 'Usuário')
@@ -97,9 +99,11 @@ def get_entrega_atual():
 
     Se não houver sessão ou nenhuma entrega, retorna fallback com um exemplo.
     """
+    # Requer usuário autenticado
+    user_id = session.get('user_id')
     user_name = session.get('user_name')
-    if not user_name:
-        return jsonify([])
+    if not user_id or not user_name:
+        return abort(401)
     try:
         entregas = Entrega.query.filter(Entrega.encarregado == user_name, Entrega.entregue.is_(False)).all()
         return jsonify([e.to_dict() for e in entregas])
@@ -126,6 +130,10 @@ def get_entregas_pendentes():
 
     Cada item contém os campos: endereco, destinatario
     """
+    # Apenas usuários autenticados podem ver entregas pendentes
+    if not session.get('user_id'):
+        return abort(401)
+
     try:
         # pendentes: encarregado vazio e entregue == False
         entregas = Entrega.query.filter(Entrega.encarregado == '', Entrega.entregue.is_(False)).all()
@@ -145,6 +153,10 @@ def get_historico_entregas():
 
     Cada item contém os campos: endereco, destinatario
     """
+    # Apenas usuários autenticados podem ver histórico de entregas
+    if not session.get('user_id'):
+        return abort(401)
+
     try:
         # histórico: entregue True e pago True
         historico_db = Entrega.query.filter(Entrega.entregue.is_(True), Entrega.pago.is_(True)).all()
@@ -162,6 +174,10 @@ def get_clientes():
 
     Cada item contém o campo: endereco
     """
+    # Apenas usuários autenticados podem buscar a lista de clientes
+    if not session.get('user_id'):
+        return abort(401)
+
     try:
         clientes = Cliente.query.all()
         result = [c.to_dict() for c in clientes]
@@ -183,6 +199,12 @@ def get_dashboard_cards():
             - status_estoque_percent_num: número (percentual) calculado a partir de Estoque
     """
     from datetime import date
+
+    # Protege endpoint: requer usuário autenticado
+    user_id = session.get('user_id')
+    user_type = session.get('user_type')
+    if not user_id or not user_type:
+        return abort(401)
 
     # Valores default em caso de erro
     pedidos_pendentes = 0
@@ -259,6 +281,10 @@ def get_estoque_cards():
       - vendas_do_dia_num: soma de preco das entregas com data == hoje
       - pagamentos: { recebidos_num, pendentes_num } em centavos/reais inteiros
     """
+    # Protege endpoint: requer usuário autenticado
+    if not session.get('user_id'):
+        return abort(401)
+
     # Calcula valores reais a partir da tabela Entrega.
     try:
         from datetime import date
@@ -316,6 +342,10 @@ def get_estoque_cards():
 @dashboard_bp.route('/pagamentos-pendentes', methods=['GET'])
 def get_pagamentos_pendentes():
     """Retorna entregas já entregues mas ainda não pagas (entregue=True, pago=False)."""
+    # Protege endpoint: requer usuário autenticado
+    if not session.get('user_id'):
+        return abort(401)
+
     try:
         pendentes = Entrega.query.filter(Entrega.entregue.is_(True), Entrega.pago.is_(False)).all()
         return jsonify([e.to_dict() for e in pendentes])

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, session
+from flask import Blueprint, jsonify, request, session, abort
 
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
@@ -14,6 +14,9 @@ def api_estoque():
       "pie": { "p45": 10, "p20": 5, ... }
     }
     """
+    # Requer usuário autenticado para acessar informações de estoque
+    if not session.get('user_id'):
+        return jsonify({'error': 'Usuário não autenticado'}), 401
     # Tenta buscar dados reais do banco
     try:
         # Import dentro do bloco para evitar problemas de import circular na inicialização
@@ -56,6 +59,10 @@ def api_pedidos():
 
     Retorna 201 com o registro salvo ou 400/500 em erro.
     """
+    # Requer usuário autenticado para registrar pedidos
+    if not session.get('user_id'):
+        return jsonify({'error': 'Usuário não autenticado'}), 401
+
     try:
         data = request.get_json(force=True)
     except Exception:
@@ -130,6 +137,10 @@ def api_financeiro():
     Estrutura retornada compatível com Chart.js (labels + datasets).
     """
     from sqlalchemy import func
+
+    # Apenas usuários autenticados podem acessar dados financeiros
+    if not session.get('user_id'):
+        return jsonify({'error': 'Usuário não autenticado'}), 401
     try:
         from app import db
         from app.models.entregas import Entrega
@@ -177,6 +188,10 @@ def api_clientes_create():
 
     Retorna 201 com o cliente criado ou 400/500 em caso de falha.
     """
+    # Requer usuário autenticado para criar clientes
+    if not session.get('user_id'):
+        return jsonify({'error': 'Usuário não autenticado'}), 401
+
     try:
         data = request.get_json(force=True)
     except Exception:
@@ -209,6 +224,10 @@ def api_clientes_create():
 @api_bp.route('/entregas/<int:entrega_id>/confirm', methods=['POST'])
 def api_entrega_confirm(entrega_id):
     """Marca uma entrega como entregue (entregue=True). Retorna registro atualizado."""
+    # Requer usuário autenticado para confirmar entregas
+    if not session.get('user_id'):
+        return jsonify({'error': 'Usuário não autenticado'}), 401
+
     try:
         from app import db
         from app.models.entregas import Entrega
@@ -340,6 +359,10 @@ def api_entrega_retirar(entrega_id):
 @api_bp.route('/entregas/<int:entrega_id>/pagar', methods=['POST'])
 def api_entrega_pagar(entrega_id):
     """Marca uma entrega como paga (pago=True) somente se já estiver entregue."""
+    # Requer usuário autenticado para registrar pagamento
+    if not session.get('user_id'):
+        return jsonify({'error': 'Usuário não autenticado'}), 401
+
     try:
         from app import db
         from app.models.entregas import Entrega
@@ -375,6 +398,10 @@ def api_list_themes():
     usuário logado ou nenhuma cor para aquele enviroment, volta
     para as cores globais (enviroment NULL).
     """
+    # Requer usuário autenticado para consultar temas do ambiente
+    if not session.get('user_id'):
+        return jsonify({'error': 'Usuário não autenticado'}), 401
+
     try:
         from app.models.color import Color
 
@@ -410,6 +437,10 @@ def api_apply_theme(tema):
     O front-end deve ler esse tema e requisitar /api/themes
     para obter as variáveis e aplicá-las via CSS custom properties.
     """
+    # Requer usuário autenticado para aplicar tema na sessão
+    if not session.get('user_id'):
+        return jsonify({'error': 'Usuário não autenticado'}), 401
+
     tema = (tema or '').strip().lower()
     if not tema:
         return jsonify({'error': 'Tema inválido'}), 400
@@ -435,6 +466,10 @@ def api_create_custom_theme():
     """
     from app import db
     from app.models.color import Color
+
+    # Requer usuário autenticado e ambiente definido na sessão
+    if not session.get('user_id'):
+        return jsonify({'error': 'Usuário não autenticado'}), 401
 
     env = session.get('enviroment')
     if not env:
@@ -491,6 +526,10 @@ def api_list_theme_names():
     from app import db
     from app.models.color import Color
 
+    # Requer usuário autenticado para listar temas do ambiente
+    if not session.get('user_id'):
+        return jsonify({'temas': []}), 401
+
     env = session.get('enviroment')
     if not env:
         return jsonify({'temas': []})
@@ -517,6 +556,10 @@ def api_apply_theme_to_env():
     """
     from app import db
     from app.models.users import User
+
+    # Requer usuário autenticado e ambiente definido
+    if not session.get('user_id'):
+        return jsonify({'error': 'Usuário não autenticado'}), 401
 
     env = session.get('enviroment')
     if not env:

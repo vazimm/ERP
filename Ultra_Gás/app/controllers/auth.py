@@ -13,8 +13,9 @@ def index():
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
-    email = request.form.get('email')
-    password = request.form.get('password')
+    # Normaliza credenciais básicas
+    email = (request.form.get('email') or '').strip().lower()
+    password = request.form.get('password') or ''
 
     user = User.query.filter_by(email=email).first()
     if not user:
@@ -22,6 +23,8 @@ def login():
         return redirect(url_for('auth.index'))
 
     if check_password_hash(user.password, password):
+        # Evita fixação de sessão reaproveitando um cookie antigo
+        session.clear()
         session['user_id'] = user.id
         session['user_type'] = user.user_type
         # salvar o nome do usuário e o ambiente na sessão para mostrar no template
