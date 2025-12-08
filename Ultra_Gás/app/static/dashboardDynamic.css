@@ -1269,21 +1269,16 @@ header .image-text .header-text {
        Dashboard Ambiente de usuario      
 ===================================== */
 
-#registrar {
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
+/* ==============================
+   Dashboard Ambiente - Alterar Cor
+============================== */
+
 
 #alterarcor {
     justify-content: center;
     align-items: center;
     height: 100%;
 }
-
-/* ==============================
-   Dashboard Ambiente - Alterar Cor
-============================== */
 
 .alterarcor-wrapper {
     display: flex;
@@ -1369,5 +1364,78 @@ header .image-text .header-text {
 
 .alterarcor-btn {
     width: 90%;
+    font-size: 1rem;
+}
+
+/* ==============================
+   Dashboard Ambiente - Registrar
+============================== */
+
+#registrar {
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.registrar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+}
+
+.registrar-card {
+    max-width: 720px;
+    width: 100%;
+    background-color: var(--cor-secundaria);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 24px 28px 28px;
+}
+
+.registrar-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.registrar-identificacao {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 18px;
+    align-items: center;
+}
+
+.registrar-field-group {
+    max-width: 520px;
+    width: 100%;
+}
+
+.registrar-field-group input[type="text"],
+.registrar-field-group input[type="email"],
+.registrar-field-group input[type="password"] {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    font-size: 1rem;
+}
+
+.registrar-select {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.registrar-submit {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.registrar-btn {
+    width: 78%;
     font-size: 1rem;
 }

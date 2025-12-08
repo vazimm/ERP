@@ -175,4 +175,57 @@ window.addEventListener('DOMContentLoaded', () => {
     if (btnAplicar) btnAplicar.addEventListener('click', aplicarTemaAmbiente);
 
     carregarTemasAmbiente();
+
+    // Cadastro de novos usuários (admin de ambiente)
+    const formCadastroUsuario = document.getElementById('form-cadastro-usuario');
+    if (formCadastroUsuario) {
+        formCadastroUsuario.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const nome = document.getElementById('registro-nome').value.trim();
+            const email = document.getElementById('registro-email').value.trim();
+            const senha = document.getElementById('registro-senha').value.trim();
+            const tipo = document.getElementById('registro-tipo').value;
+
+            if (!nome || !email || !senha || !tipo) {
+                showTemaModal(
+                    'Preencha todos os campos do formulário de cadastro.',
+                    'Campos obrigatórios',
+                    'error'
+                );
+                return;
+            }
+
+            try {
+                const resp = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: nome,
+                        email: email,
+                        password: senha,
+                        user_type: tipo,
+                    }),
+                });
+
+                const data = await resp.json().catch(() => ({}));
+
+                if (!resp.ok || !data.ok) {
+                    const msg = data && data.error
+                        ? data.error
+                        : 'Não foi possível criar o usuário.';
+                    showTemaModal(msg, 'Erro ao cadastrar usuário', 'error');
+                    return;
+                }
+
+                showTemaModal('Usuário criado com sucesso.', 'Sucesso', 'success', true);
+                formCadastroUsuario.reset();
+            } catch (err) {
+                console.error('Erro ao criar usuário:', err);
+                showTemaModal('Falha inesperada ao criar usuário.', 'Erro', 'error');
+            }
+        });
+    }
 });

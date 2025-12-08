@@ -23,21 +23,21 @@ def init_test_users():
                 name='Administrador',
                 email='admin@example.com',
                 password=generate_password_hash('admin123'),
-                enviroment='Administrador de Ambiente',
+                enviroment='Ambiente de Teste',
                 user_type='admin'
             )
             user = User(
                 name='Usuário de Teste',
                 email='user@example.com',
                 password=generate_password_hash('user123'),
-                enviroment='Administrador de Ambiente',
+                enviroment='Ambiente de Teste',
                 user_type='user'
             )
             ambiente = User(
                 name='Administrador de Ambiente',
                 email='ambienteuser@example.com',
                 password=generate_password_hash('ambienteuser123'),
-                enviroment='Administrador de Ambiente',
+                enviroment='Ambiente de Teste',
                 user_type='ambiente'
             )
             db.session.add(admin)
@@ -138,64 +138,64 @@ def init_test_users():
         else:
             print('Entregas já existem')
 
-        # Popula tabela de cores para o ambiente de teste ("Administrador de Ambiente"),
+        # Popula tabela de cores para o ambiente de teste ("Ambiente de Teste"),
         # se ainda não houver registros. Assim, qualquer usuário com
-        # enviroment == "Administrador de Ambiente" usará essas cores.
+        # enviroment == "Ambiente de Teste" usará essas cores.
         if not Color.query.first():
             cores_seed = [
                 # Tema padrão (root)
-            Color(nome_variavel='cor-fundo', valor_padrao='#ffffff', tema='root', descricao='Cor de fundo principal', enviroment='Administrador de Ambiente'),
-            Color(nome_variavel='cor-texto', valor_padrao='#000000', tema='root', descricao='Cor de texto padrão', enviroment='Administrador de Ambiente'),
-            Color(nome_variavel='cor-botao-texto', valor_padrao='#000000', tema='root', descricao='Texto dos botões', enviroment='Administrador de Ambiente'),
-            Color(nome_variavel='cor-primaria', valor_padrao='#bbbbbb', tema='root', descricao='Cor primária / destaque', enviroment='Administrador de Ambiente'),
-            Color(nome_variavel='cor-secundaria', valor_padrao='#ffffff', tema='root', descricao='Cor secundária / cartões', enviroment='Administrador de Ambiente'),
-            Color(nome_variavel='cor-botao', valor_padrao='#bbbbbb', tema='root', descricao='Cor dos botões padrão', enviroment='Administrador de Ambiente'),
+            Color(nome_variavel='cor-fundo', valor_padrao='#ffffff', tema='root', descricao='Cor de fundo principal', enviroment='Ambiente de Teste'),
+            Color(nome_variavel='cor-texto', valor_padrao='#000000', tema='root', descricao='Cor de texto padrão', enviroment='Ambiente de Teste'),
+            Color(nome_variavel='cor-botao-texto', valor_padrao='#000000', tema='root', descricao='Texto dos botões', enviroment='Ambiente de Teste'),
+            Color(nome_variavel='cor-primaria', valor_padrao='#bbbbbb', tema='root', descricao='Cor primária / destaque', enviroment='Ambiente de Teste'),
+            Color(nome_variavel='cor-secundaria', valor_padrao='#ffffff', tema='root', descricao='Cor secundária / cartões', enviroment='Ambiente de Teste'),
+            Color(nome_variavel='cor-botao', valor_padrao='#bbbbbb', tema='root', descricao='Cor dos botões padrão', enviroment='Ambiente de Teste'),
 
             # Variáveis de transição globais do root
-            Color(nome_variavel='tran-02', valor_padrao='all 0.2s ease', tema='root', descricao='Transição padrão 0.2s', enviroment='Administrador de Ambiente'),
-            Color(nome_variavel='tran-03', valor_padrao='all 0.3s ease', tema='root', descricao='Transição padrão 0.3s', enviroment='Administrador de Ambiente'),
-            Color(nome_variavel='tran-04', valor_padrao='all 0.4s ease', tema='root', descricao='Transição padrão 0.4s', enviroment='Administrador de Ambiente'),
-            Color(nome_variavel='tran-05', valor_padrao='all 0.5s ease', tema='root', descricao='Transição padrão 0.5s', enviroment='Administrador de Ambiente'),
+            Color(nome_variavel='tran-02', valor_padrao='all 0.2s ease', tema='root', descricao='Transição padrão 0.2s', enviroment='Ambiente de Teste'),
+            Color(nome_variavel='tran-03', valor_padrao='all 0.3s ease', tema='root', descricao='Transição padrão 0.3s', enviroment='Ambiente de Teste'),
+            Color(nome_variavel='tran-04', valor_padrao='all 0.4s ease', tema='root', descricao='Transição padrão 0.4s', enviroment='Ambiente de Teste'),
+            Color(nome_variavel='tran-05', valor_padrao='all 0.5s ease', tema='root', descricao='Transição padrão 0.5s', enviroment='Ambiente de Teste'),
 
                 # Tema rosa
-                Color(nome_variavel='cor-fundo', valor_padrao='#ffcbcd', tema='rosa', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-texto', valor_padrao='#000000', tema='rosa', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-botao-texto', valor_padrao='#000000', tema='rosa', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-primaria', valor_padrao='#ff7a90', tema='rosa', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-secundaria', valor_padrao='#fae4e5', tema='rosa', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-botao', valor_padrao='#ff7a7a', tema='rosa', enviroment='Administrador de Ambiente'),
+                Color(nome_variavel='cor-fundo', valor_padrao='#ffcbcd', tema='rosa', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-texto', valor_padrao='#000000', tema='rosa', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-botao-texto', valor_padrao='#000000', tema='rosa', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-primaria', valor_padrao='#ff7a90', tema='rosa', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-secundaria', valor_padrao='#fae4e5', tema='rosa', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-botao', valor_padrao='#ff7a7a', tema='rosa', enviroment='Ambiente de Teste'),
 
                 # Tema azul
-                Color(nome_variavel='cor-fundo', valor_padrao='#dae9ff', tema='azul', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-texto', valor_padrao='#000000', tema='azul', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-botao-texto', valor_padrao='#000000', tema='azul', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-primaria', valor_padrao='#99b3cc', tema='azul', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-secundaria', valor_padrao='#f4f8ff', tema='azul', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-botao', valor_padrao='#6699ff', tema='azul', enviroment='Administrador de Ambiente'),
+                Color(nome_variavel='cor-fundo', valor_padrao='#dae9ff', tema='azul', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-texto', valor_padrao='#000000', tema='azul', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-botao-texto', valor_padrao='#000000', tema='azul', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-primaria', valor_padrao='#99b3cc', tema='azul', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-secundaria', valor_padrao='#f4f8ff', tema='azul', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-botao', valor_padrao='#6699ff', tema='azul', enviroment='Ambiente de Teste'),
 
                 # Tema cinza
-                Color(nome_variavel='cor-fundo', valor_padrao='#ebebeb', tema='cinza', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-texto', valor_padrao='#000000', tema='cinza', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-botao-texto', valor_padrao='#000000', tema='cinza', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-primaria', valor_padrao='#bbbbbb', tema='cinza', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-secundaria', valor_padrao='#ffffff', tema='cinza', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-botao', valor_padrao='#888888', tema='cinza', enviroment='Administrador de Ambiente'),
+                Color(nome_variavel='cor-fundo', valor_padrao='#ebebeb', tema='cinza', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-texto', valor_padrao='#000000', tema='cinza', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-botao-texto', valor_padrao='#000000', tema='cinza', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-primaria', valor_padrao='#bbbbbb', tema='cinza', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-secundaria', valor_padrao='#ffffff', tema='cinza', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-botao', valor_padrao='#888888', tema='cinza', enviroment='Ambiente de Teste'),
 
                 # Tema verde
-                Color(nome_variavel='cor-fundo', valor_padrao='#d2ffcf', tema='verde', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-texto', valor_padrao='#000000', tema='verde', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-botao-texto', valor_padrao='#000000', tema='verde', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-primaria', valor_padrao='#6ac86f', tema='verde', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-secundaria', valor_padrao='#e7ffe5', tema='verde', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-botao', valor_padrao='#34c639', tema='verde', enviroment='Administrador de Ambiente'),
+                Color(nome_variavel='cor-fundo', valor_padrao='#d2ffcf', tema='verde', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-texto', valor_padrao='#000000', tema='verde', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-botao-texto', valor_padrao='#000000', tema='verde', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-primaria', valor_padrao='#6ac86f', tema='verde', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-secundaria', valor_padrao='#e7ffe5', tema='verde', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-botao', valor_padrao='#34c639', tema='verde', enviroment='Ambiente de Teste'),
 
                 # Tema preto
-                Color(nome_variavel='cor-fundo', valor_padrao='#1b1b1b', tema='preto', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-texto', valor_padrao='#ffffff', tema='preto', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-botao-texto', valor_padrao='#ffffff', tema='preto', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-primaria', valor_padrao='#4b4b4b', tema='preto', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-secundaria', valor_padrao='#bbbbbb', tema='preto', enviroment='Administrador de Ambiente'),
-                Color(nome_variavel='cor-botao', valor_padrao='#333333', tema='preto', enviroment='Administrador de Ambiente'),
+                Color(nome_variavel='cor-fundo', valor_padrao='#1b1b1b', tema='preto', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-texto', valor_padrao='#ffffff', tema='preto', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-botao-texto', valor_padrao='#ffffff', tema='preto', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-primaria', valor_padrao='#4b4b4b', tema='preto', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-secundaria', valor_padrao='#bbbbbb', tema='preto', enviroment='Ambiente de Teste'),
+                Color(nome_variavel='cor-botao', valor_padrao='#333333', tema='preto', enviroment='Ambiente de Teste'),
             ]
             db.session.add_all(cores_seed)
             db.session.commit()

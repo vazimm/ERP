@@ -80,7 +80,87 @@
 
         <section class="home">
             <!-- CSS Estilo da primeira aba do admin dashboard -->
-            <div id="registrar" class="conteudo ativo"></div>
+            <div id="registrar" class="conteudo ativo">
+                <div class="estoque-container registrar-container">
+                    <div class="pedidos-container registrar-card">
+                        <h1 class="section-title registrar-title">
+                            Cadastro de novos usuários
+                        </h1>
+
+                        <form id="form-cadastro-usuario" autocomplete="off">
+                            <div
+                                class="identificacao-grid registrar-identificacao"
+                            >
+                                <div class="form-group registrar-field-group">
+                                    <label for="registro-nome">Nome</label>
+                                    <input
+                                        type="text"
+                                        id="registro-nome"
+                                        name="name"
+                                        placeholder="Nome completo"
+                                        required
+                                    />
+                                </div>
+                                <div class="form-group registrar-field-group">
+                                    <label for="registro-email">Email</label>
+                                    <input
+                                        type="email"
+                                        id="registro-email"
+                                        name="email"
+                                        placeholder="email@exemplo.com"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div
+                                class="identificacao-grid registrar-identificacao"
+                            >
+                                <div class="form-group registrar-field-group">
+                                    <label for="registro-senha">Senha</label>
+                                    <input
+                                        type="password"
+                                        id="registro-senha"
+                                        name="password"
+                                        placeholder="Defina uma senha"
+                                        required
+                                    />
+                                </div>
+                                <div class="form-group registrar-field-group">
+                                    <label for="registro-tipo"
+                                        >Tipo de usuário</label
+                                    >
+                                    <select
+                                        id="registro-tipo"
+                                        name="user_type"
+                                        class="registrar-select"
+                                        required
+                                    >
+                                        <option value="" disabled selected>
+                                            Selecione: Atendente ou Entregador
+                                        </option>
+                                        <option value="admin">
+                                            Atendente (admin)
+                                        </option>
+                                        <option value="user">
+                                            Entregador (user)
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="submit-wrap registrar-submit">
+                                <button
+                                    type="submit"
+                                    class="btn-submit registrar-btn"
+                                >
+                                    Cadastrar usuário
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
             <div id="alterarcor" class="conteudo alterarcor-wrapper">
                 <div class="estoque-container alterarcor-container">

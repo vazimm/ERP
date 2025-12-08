@@ -606,3 +606,82 @@ def api_current_theme():
         return jsonify({'tema': user.tema or 'root'})
     except Exception:
         return jsonify({'tema': 'root'})
+
+
+@api_bp.route('/users', methods=['POST'])
+def api_create_user():
+    """Cria um novo usuário (admin ou entregador) no mesmo ambiente do criador.
+
+    Espera JSON:
+    {
+      "name": "...",
+      "email": "...",
+      "password": "...",
+      "user_type": "admin" | "user"
+    }
+
+    - enviroment é herdado da sessão de quem está criando
+    - tema recebe o tema atual do ambiente (User.tema do criador ou 'root')
+    """
+    from werkzeug.security import generate_password_hash
+    from app import db
+    from app.models.users import User
+
+    # Requer usuário autenticado
+    creator_id = session.get('user_id')
+    env = session.get('enviroment')
+    if not creator_id or not env:
+        return jsonify({'error': 'Usuário não autenticado ou ambiente não definido'}), 401
+
+    try:
+        data = request.get_json(force=True) or {}
+    except Exception:
+        return jsonify({'error': 'JSON inválido'}), 400
+
+    name = (data.get('name') or '').strip()
+    email = (data.get('email') or '').strip().lower()
+    password = (data.get('password') or '').strip()
+    user_type = (data.get('user_type') or '').strip()
+
+    if not name or not email or not password or user_type not in ('admin', 'user'):
+        return jsonify({'error': 'Campos obrigatórios inválidos'}), 400
+
+    # Verifica se já existe usuário com este e-mail
+    if User.query.filter_by(email=email).first():
+        return jsonify({'error': 'E-mail já cadastrado'}), 400
+
+    # Tema do novo usuário: herda do criador, com fallback
+    creator = User.query.get(creator_id)
+    tema_inicial = 'root'
+    if creator and creator.tema:
+        tema_inicial = creator.tema
+    else:
+        # fallback: se sessão tiver tema atual, usa-o
+        tema_inicial = session.get('current_theme') or 'root'
+
+    try:
+        novo = User(
+            name=name,
+            email=email,
+            password=generate_password_hash(password),
+            enviroment=env,
+            user_type=user_type,
+            tema=tema_inicial,
+        )
+        db.session.add(novo)
+        db.session.commit()
+
+        return jsonify({'ok': True, 'user': {
+            'id': novo.id,
+            'name': novo.name,
+            'email': novo.email,
+            'enviroment': novo.enviroment,
+            'user_type': novo.user_type,
+            'tema': novo.tema,
+        }}), 201
+    except Exception as e:
+        try:
+            db.session.rollback()
+        except Exception:
+            pass
+        return jsonify({'error': 'Falha ao criar usuário', 'detail': str(e)}), 500
