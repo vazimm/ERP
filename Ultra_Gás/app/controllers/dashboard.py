@@ -6,6 +6,15 @@ from app.models.entregas import Entrega
 from app.models.color import Color
 from app.models.users import User
 
+# IMPORTANTE - ISOLAMENTO POR AMBIENTE NO DASHBOARD
+# --------------------------------------------------
+# Todas as rotas JSON deste módulo (listas, cards, métricas) devem:
+#   - exigir session['user_id'] e session['enviroment'] válidos;
+#   - filtrar sempre por enviroment == session['enviroment'] nas queries
+#     de Entrega, Cliente, Estoque, etc.;
+#   - nunca retornar dados de outros ambientes.
+# Ao criar novas rotas de dashboard, siga este padrão.
+
 # Nota: o limite máximo do estoque (capacidade) está definido em
 # `app/models/estoque.py` como DEFAULT_CAPACITY (atualmente 250).
 # A constraint no banco (ck_estoque_total_max) também impõe que a soma dos
@@ -102,10 +111,15 @@ def get_entrega_atual():
     # Requer usuário autenticado
     user_id = session.get('user_id')
     user_name = session.get('user_name')
-    if not user_id or not user_name:
+    env = session.get('enviroment')
+    if not user_id or not user_name or not env:
         return abort(401)
     try:
-        entregas = Entrega.query.filter(Entrega.encarregado == user_name, Entrega.entregue.is_(False)).all()
+        entregas = Entrega.query.filter(
+            Entrega.encarregado == user_name,
+            Entrega.entregue.is_(False),
+            Entrega.enviroment == env
+        ).all()
         return jsonify([e.to_dict() for e in entregas])
     except Exception:
         # Fallback: um exemplo com preco
@@ -131,12 +145,17 @@ def get_entregas_pendentes():
     Cada item contém os campos: endereco, destinatario
     """
     # Apenas usuários autenticados podem ver entregas pendentes
-    if not session.get('user_id'):
+    env = session.get('enviroment')
+    if not session.get('user_id') or not env:
         return abort(401)
 
     try:
-        # pendentes: encarregado vazio e entregue == False
-        entregas = Entrega.query.filter(Entrega.encarregado == '', Entrega.entregue.is_(False)).all()
+        # pendentes: encarregado vazio e entregue == False, apenas do mesmo enviroment
+        entregas = Entrega.query.filter(
+            Entrega.encarregado == '',
+            Entrega.entregue.is_(False),
+            Entrega.enviroment == env
+        ).all()
         result = [e.to_dict() for e in entregas]
         return jsonify(result)
     except Exception:
@@ -154,12 +173,17 @@ def get_historico_entregas():
     Cada item contém os campos: endereco, destinatario
     """
     # Apenas usuários autenticados podem ver histórico de entregas
-    if not session.get('user_id'):
+    env = session.get('enviroment')
+    if not session.get('user_id') or not env:
         return abort(401)
 
     try:
-        # histórico: entregue True e pago True
-        historico_db = Entrega.query.filter(Entrega.entregue.is_(True), Entrega.pago.is_(True)).all()
+        # histórico: entregue True e pago True, apenas do mesmo enviroment
+        historico_db = Entrega.query.filter(
+            Entrega.entregue.is_(True),
+            Entrega.pago.is_(True),
+            Entrega.enviroment == env
+        ).all()
         return jsonify([e.to_dict() for e in historico_db])
     except Exception:
         historico = [
@@ -175,11 +199,12 @@ def get_clientes():
     Cada item contém o campo: endereco
     """
     # Apenas usuários autenticados podem buscar a lista de clientes
-    if not session.get('user_id'):
+    env = session.get('enviroment')
+    if not session.get('user_id') or not env:
         return abort(401)
 
     try:
-        clientes = Cliente.query.all()
+        clientes = Cliente.query.filter_by(enviroment=env).all()
         result = [c.to_dict() for c in clientes]
         return jsonify(result)
     except Exception:
@@ -203,7 +228,8 @@ def get_dashboard_cards():
     # Protege endpoint: requer usuário autenticado
     user_id = session.get('user_id')
     user_type = session.get('user_type')
-    if not user_id or not user_type:
+    env = session.get('enviroment')
+    if not user_id or not user_type or not env:
         return abort(401)
 
     # Valores default em caso de erro
@@ -214,7 +240,7 @@ def get_dashboard_cards():
 
     # Calcula percent do estoque
     try:
-        estoque = Estoque.query.first()
+        estoque = Estoque.query.filter_by(enviroment=env).first()
         if estoque:
             status_percent = estoque.percent()
     except Exception:
@@ -224,15 +250,26 @@ def get_dashboard_cards():
 
     try:
         # Pedidos pendentes (admin e entregador): entregas ainda não atribuídas (sem encarregado) e não entregues
-        pedidos_pendentes = Entrega.query.filter(Entrega.encarregado == '', Entrega.entregue.is_(False)).count()
+        pedidos_pendentes = Entrega.query.filter(
+            Entrega.encarregado == '',
+            Entrega.entregue.is_(False),
+            Entrega.enviroment == env
+        ).count()
 
         # Vendas do dia (admin): quantidade de entregas criadas hoje
-        vendas_hoje = Entrega.query.filter(Entrega.data == hoje_str).count()
+        vendas_hoje = Entrega.query.filter(
+            Entrega.data == hoje_str,
+            Entrega.enviroment == env
+        ).count()
 
         # Entregadores em rota (admin): quantidade de encarregados distintos com entregas em aberto
         entregadores_rota = (
             db.session.query(Entrega.encarregado)
-            .filter(Entrega.encarregado != '', Entrega.entregue.is_(False))
+            .filter(
+                Entrega.encarregado != '',
+                Entrega.entregue.is_(False),
+                Entrega.enviroment == env
+            )
             .distinct()
             .count()
         )
@@ -243,13 +280,15 @@ def get_dashboard_cards():
             # Entrega atual: entregas atribuídas ao usuário e não entregues
             entregas_atual_usuario = Entrega.query.filter(
                 Entrega.encarregado == user_name,
-                Entrega.entregue.is_(False)
+                Entrega.entregue.is_(False),
+                Entrega.enviroment == env
             ).count()
 
             # Entregas concluídas: atribuídas ao usuário e marcadas como entregues
             entregas_concluidas_usuario = Entrega.query.filter(
                 Entrega.encarregado == user_name,
-                Entrega.entregue.is_(True)
+                Entrega.entregue.is_(True),
+                Entrega.enviroment == env
             ).count()
         else:
             entregas_atual_usuario = 0
@@ -282,7 +321,8 @@ def get_estoque_cards():
       - pagamentos: { recebidos_num, pendentes_num } em centavos/reais inteiros
     """
     # Protege endpoint: requer usuário autenticado
-    if not session.get('user_id'):
+    env = session.get('enviroment')
+    if not session.get('user_id') or not env:
         return abort(401)
 
     # Calcula valores reais a partir da tabela Entrega.
@@ -290,8 +330,11 @@ def get_estoque_cards():
         from datetime import date
         hoje_str = date.today().isoformat()  # yyyy-mm-dd
 
-        # Vendas do dia: todas as entregas criadas hoje (independente de pago/entregue)
-        vendas_hoje = Entrega.query.filter(Entrega.data == hoje_str).all()
+        # Vendas do dia: todas as entregas criadas hoje (independente de pago/entregue), apenas do mesmo enviroment
+        vendas_hoje = Entrega.query.filter(
+            Entrega.data == hoje_str,
+            Entrega.enviroment == env
+        ).all()
         vendas_total = 0
         for e in vendas_hoje:
             try:
@@ -301,7 +344,10 @@ def get_estoque_cards():
                 pass
 
         # Total recebido: entregas pagas (pago=True)
-        recebidas = Entrega.query.filter(Entrega.pago.is_(True)).all()
+        recebidas = Entrega.query.filter(
+            Entrega.pago.is_(True),
+            Entrega.enviroment == env
+        ).all()
         recebidos_total = 0
         for e in recebidas:
             try:
@@ -312,7 +358,10 @@ def get_estoque_cards():
 
         # Total pendente: entregas já entregues mas não pagas (entregue=True, pago=False) Versão antiga
         # Total pendente: pedido realizado, mas ainda não pago (pago=False) Versão atual
-        pendentes = Entrega.query.filter(Entrega.pago.is_(False)).all()
+        pendentes = Entrega.query.filter(
+            Entrega.pago.is_(False),
+            Entrega.enviroment == env
+        ).all()
         pendentes_total = 0
         for e in pendentes:
             try:
@@ -343,11 +392,16 @@ def get_estoque_cards():
 def get_pagamentos_pendentes():
     """Retorna entregas já entregues mas ainda não pagas (entregue=True, pago=False)."""
     # Protege endpoint: requer usuário autenticado
-    if not session.get('user_id'):
+    env = session.get('enviroment')
+    if not session.get('user_id') or not env:
         return abort(401)
 
     try:
-        pendentes = Entrega.query.filter(Entrega.entregue.is_(True), Entrega.pago.is_(False)).all()
+        pendentes = Entrega.query.filter(
+            Entrega.entregue.is_(True),
+            Entrega.pago.is_(False),
+            Entrega.enviroment == env
+        ).all()
         return jsonify([e.to_dict() for e in pendentes])
     except Exception:
         # Fallback com exemplo

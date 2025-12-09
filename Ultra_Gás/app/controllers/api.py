@@ -1,6 +1,19 @@
 from flask import Blueprint, jsonify, request, session, abort
 
 
+# IMPORTANTE - ISOLAMENTO POR AMBIENTE
+# -------------------------------------------------
+# Regra geral deste módulo:
+#   - Todo dado GRAVADO que pertença a uma "instância" lógica
+#     (clientes, entregas, estoque, temas, usuários de ambiente)
+#     deve receber enviroment=session['enviroment'] no momento da criação.
+#   - Todo dado CONSULTADO para front-end (listas, cards, métricas,
+#     gráficos) deve sempre filtrar por enviroment == session['enviroment'].
+#   - Se não houver enviroment na sessão, os endpoints que dependem
+#     disso devem responder com erro 401 e NUNCA retornar dados de
+#     outros ambientes.
+# Ao adicionar novas rotas/queries neste arquivo, siga este padrão.
+
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 
@@ -15,14 +28,16 @@ def api_estoque():
     }
     """
     # Requer usuário autenticado para acessar informações de estoque
-    if not session.get('user_id'):
-        return jsonify({'error': 'Usuário não autenticado'}), 401
+    env = session.get('enviroment')
+    if not session.get('user_id') or not env:
+        return jsonify({'error': 'Usuário não autenticado ou ambiente não definido'}), 401
     # Tenta buscar dados reais do banco
     try:
         # Import dentro do bloco para evitar problemas de import circular na inicialização
         # e para só tentar acessar o DB quando este endpoint for chamado.
         from app.models.estoque import Estoque, DEFAULT_CAPACITY
-        estoque = Estoque.query.first()
+        # Estoque apenas do mesmo enviroment do usuário
+        estoque = Estoque.query.filter_by(enviroment=env).first()
         if estoque:
             # Usa DEFAULT_CAPACITY (definido em app/models/estoque.py) para compor a mensagem.
             data = {
@@ -60,8 +75,9 @@ def api_pedidos():
     Retorna 201 com o registro salvo ou 400/500 em erro.
     """
     # Requer usuário autenticado para registrar pedidos
-    if not session.get('user_id'):
-        return jsonify({'error': 'Usuário não autenticado'}), 401
+    env = session.get('enviroment')
+    if not session.get('user_id') or not env:
+        return jsonify({'error': 'Usuário não autenticado ou ambiente não definido'}), 401
 
     try:
         data = request.get_json(force=True)
@@ -107,10 +123,6 @@ def api_pedidos():
 
         preco = data.get('preco') or ''
 
-        # enviroment herdado do usuário que está criando o pedido
-        from flask import session as _session
-        env = _session.get('enviroment')
-
         entrega = Entrega(
             endereco=endereco,
             destinatario=destinatario,
@@ -120,7 +132,7 @@ def api_pedidos():
             entregue=False,   # inicia não entregue
             pago=False,        # inicia não pago
             preco=preco,       # valor calculado pelo front-end
-            enviroment=env,
+            enviroment=env,    # isola a entrega no ambiente do criador
         )
         db.session.add(entrega)
         db.session.commit()
@@ -144,8 +156,9 @@ def api_financeiro():
     from sqlalchemy import func
 
     # Apenas usuários autenticados podem acessar dados financeiros
-    if not session.get('user_id'):
-        return jsonify({'error': 'Usuário não autenticado'}), 401
+    env = session.get('enviroment')
+    if not session.get('user_id') or not env:
+        return jsonify({'error': 'Usuário não autenticado ou ambiente não definido'}), 401
     try:
         from app import db
         from app.models.entregas import Entrega
@@ -155,7 +168,11 @@ def api_financeiro():
         counts_map = {m: 0 for m in metodos_ordem}
 
         resultados = db.session.query(Entrega.metodo_pagamento, func.count(Entrega.id)) \
-            .filter(Entrega.metodo_pagamento.isnot(None), Entrega.entregue.is_(True)) \
+            .filter(
+                Entrega.metodo_pagamento.isnot(None),
+                Entrega.entregue.is_(True),
+                Entrega.enviroment == env
+            ) \
             .group_by(Entrega.metodo_pagamento).all()
 
         for metodo, qtd in resultados:
@@ -194,8 +211,9 @@ def api_clientes_create():
     Retorna 201 com o cliente criado ou 400/500 em caso de falha.
     """
     # Requer usuário autenticado para criar clientes
-    if not session.get('user_id'):
-        return jsonify({'error': 'Usuário não autenticado'}), 401
+    env = session.get('enviroment')
+    if not session.get('user_id') or not env:
+        return jsonify({'error': 'Usuário não autenticado ou ambiente não definido'}), 401
 
     try:
         data = request.get_json(force=True)
@@ -213,10 +231,7 @@ def api_clientes_create():
         from app import db
         from app.models.clientes import Cliente
 
-        # enviroment herdado do usuário que está cadastrando o cliente
-        from flask import session as _session
-        env = _session.get('enviroment')
-
+        # enviroment herdado do usuário que está cadastrando o cliente (já validado acima)
         cliente = Cliente(endereco=str(endereco).strip(), enviroment=env)
         db.session.add(cliente)
         db.session.commit()
