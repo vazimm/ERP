@@ -28,7 +28,8 @@ class Entrega(db.Model):
     preco = db.Column(db.String(32), nullable=True, default='', server_default='')
     # data em que o pedido foi criado (ISO yyyy-mm-dd)
     data = db.Column(db.String(10), nullable=True, default=lambda: date.today().isoformat())
-
+    enviroment = db.Column(db.String(100), nullable=False, index=True)
+    
     # Constraint simples para garantir que, quando informado, o método esteja entre os permitidos.
     # Observe: se mudar os valores permitidos, atualize também esta expressão.
     __table_args__ = (

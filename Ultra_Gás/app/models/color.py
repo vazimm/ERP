@@ -24,7 +24,7 @@ class Color(db.Model):
 	# Ambiente ao qual essa configuração de cor pertence
 	# Deve corresponder ao campo enviroment em users.py para que
 	# o tema seja aplicado apenas aos usuários daquele ambiente.
-	enviroment = db.Column(db.String(100), nullable=True, index=True)
+	enviroment = db.Column(db.String(100), nullable=False, index=True)
 
 	def __repr__(self) -> str:  # pragma: no cover
 		return f"<Color {self.nome_variavel} ({self.tema})>"

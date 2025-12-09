@@ -107,6 +107,10 @@ def api_pedidos():
 
         preco = data.get('preco') or ''
 
+        # enviroment herdado do usuário que está criando o pedido
+        from flask import session as _session
+        env = _session.get('enviroment')
+
         entrega = Entrega(
             endereco=endereco,
             destinatario=destinatario,
@@ -115,7 +119,8 @@ def api_pedidos():
             encarregado='',   # inicia vazio
             entregue=False,   # inicia não entregue
             pago=False,        # inicia não pago
-            preco=preco        # valor calculado pelo front-end
+            preco=preco,       # valor calculado pelo front-end
+            enviroment=env,
         )
         db.session.add(entrega)
         db.session.commit()
@@ -208,7 +213,11 @@ def api_clientes_create():
         from app import db
         from app.models.clientes import Cliente
 
-        cliente = Cliente(endereco=str(endereco).strip())
+        # enviroment herdado do usuário que está cadastrando o cliente
+        from flask import session as _session
+        env = _session.get('enviroment')
+
+        cliente = Cliente(endereco=str(endereco).strip(), enviroment=env)
         db.session.add(cliente)
         db.session.commit()
 
@@ -289,8 +298,9 @@ def api_entrega_retirar(entrega_id):
         return result
 
     user_name = session.get('user_name')
-    if not user_name:
-        return jsonify({'error': 'Usuário não autenticado'}), 401
+    env = session.get('enviroment')
+    if not user_name or not env:
+        return jsonify({'error': 'Usuário não autenticado ou ambiente não definido'}), 401
     try:
         from app import db
         from app.models.entregas import Entrega
@@ -304,10 +314,10 @@ def api_entrega_retirar(entrega_id):
         if entrega.encarregado and entrega.encarregado != user_name:
             return jsonify({'error': 'Entrega já atribuída', 'encarregado': entrega.encarregado}), 409
 
-        # Carrega registro de estoque
-        estoque = Estoque.query.first()
+        # Carrega registro de estoque APENAS do mesmo enviroment do usuário
+        estoque = Estoque.query.filter_by(enviroment=env).first()
         if not estoque:
-            return jsonify({'error': 'Estoque não configurado'}), 500
+            return jsonify({'error': 'Estoque não configurado para este ambiente'}), 500
 
         # Se a entrega já estiver atribuída ao mesmo usuário, não baixa estoque de novo
         if entrega.encarregado == user_name:

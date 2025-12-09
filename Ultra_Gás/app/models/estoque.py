@@ -19,6 +19,7 @@ class Estoque(db.Model):
     p8 = db.Column(db.Integer, nullable=False, default=0)
     p5 = db.Column(db.Integer, nullable=False, default=0)
     agua = db.Column(db.Integer, nullable=False, default=0)
+    enviroment = db.Column(db.String(100), nullable=False, index=True)
 
     # Constraint de banco que garante que a soma de todos os campos do estoque
     # não ultrapasse a capacidade máxima (atualmente 250).
