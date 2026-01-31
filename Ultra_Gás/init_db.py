@@ -56,7 +56,8 @@ def init_test_users():
                 p13=13,
                 p8=8,
                 p5=5,
-                agua=15
+                agua=15,
+                enviroment='Ambiente de Teste'
             )
             db.session.add(sample)
             db.session.commit()
@@ -68,11 +69,11 @@ def init_test_users():
         # Cria alguns clientes de teste se não existirem
         if not Cliente.query.first():
             clientes_amostra = [
-                Cliente(endereco='Rua das Flores, 123'),
-                Cliente(endereco='Avenida Brasil, 1575'),
-                Cliente(endereco='Rua dos Pinheiros, 900'),
-                Cliente(endereco='Alameda Santos, 300'),
-                Cliente(endereco='Travessa das Palmeiras, 12')
+                Cliente(endereco='Rua das Flores, 123', enviroment='Ambiente de Teste'),
+                Cliente(endereco='Avenida Brasil, 1575', enviroment='Ambiente de Teste'),
+                Cliente(endereco='Rua dos Pinheiros, 900', enviroment='Ambiente de Teste'),
+                Cliente(endereco='Alameda Santos, 300', enviroment='Ambiente de Teste'),
+                Cliente(endereco='Travessa das Palmeiras, 12', enviroment='Ambiente de Teste')
             ]
             db.session.add_all(clientes_amostra)
             db.session.commit()
@@ -129,7 +130,8 @@ def init_test_users():
             entregas_objs = [
                 Entrega(
                     endereco=e[0], destinatario=e[1], produto=e[2], metodo_pagamento=e[3],
-                    encarregado=e[4], entregue=e[5], pago=e[6], preco=calcular_preco(e[2])
+                    encarregado=e[4], entregue=e[5], pago=e[6], preco=calcular_preco(e[2]),
+                    enviroment='Ambiente de Teste'
                 ) for e in dados_entregas
             ]
             db.session.add_all(entregas_objs)
