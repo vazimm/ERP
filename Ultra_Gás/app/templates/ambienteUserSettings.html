@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
@@ -63,6 +63,12 @@
                             <a href="#">
                                 <i class="bx bx-palette icon"></i>
                                 <span class="text nav-text">Alterar cor</span>
+                            </a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="#">
+                                <i class="bx bx-package icon"></i>
+                                <span class="text nav-text">Estoque</span>
                             </a>
                         </li>
                     </ul>
@@ -315,9 +321,398 @@
                     </div>
                 </div>
             </div>
+            <div id="estoque" class="conteudo ambiente-estoque">
+                <div class="estoque-container">
+                    <h1 class="section-title estoque-config-title">
+                        Configuração de estoque do ambiente
+                    </h1>
+
+                    <div class="estoque-grid">
+                        <div class="cards-column">
+                            <div class="estoque-card estoque-config-card">
+                                <form
+                                    id="form-estoque-config"
+                                    autocomplete="off"
+                                >
+                                    <div
+                                        class="identificacao-grid estoque-identificacao"
+                                    >
+                                        <div
+                                            class="form-group estoque-capacity-group"
+                                        >
+                                            <label for="estoque-capacidade"
+                                                >Capacidade máxima</label
+                                            >
+                                            <select
+                                                id="estoque-capacidade"
+                                                name="capacity"
+                                                class="form-select"
+                                            >
+                                                <option value="250">
+                                                    Nível 1 - 250 itens
+                                                </option>
+                                                <option value="500">
+                                                    Nível 2 - 500 itens
+                                                </option>
+                                                <option value="750">
+                                                    Nível 3 - 750 itens
+                                                </option>
+                                                <option value="1000">
+                                                    Nível 4 - 1000 itens
+                                                </option>
+                                            </select>
+                                            <small
+                                                class="estoque-capacity-hint"
+                                            >
+                                                Defina o limite máximo de itens
+                                                que este ambiente pode
+                                                armazenar.
+                                            </small>
+                                        </div>
+
+                                        <div
+                                            class="form-group estoque-status-group"
+                                        >
+                                            <label>Uso de capacidade</label>
+                                            <div class="estoque-progress">
+                                                <div
+                                                    class="estoque-progress-fill"
+                                                    id="estoque-progress-fill"
+                                                ></div>
+                                            </div>
+                                            <small
+                                                id="estoque-status-text"
+                                                class="estoque-status-text"
+                                            >
+                                                Estoque ainda não configurado.
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <h2 class="sub-title estoque-sub-title">
+                                        Volumes por tipo
+                                    </h2>
+
+                                    <div
+                                        class="produtos-list estoque-main-grid"
+                                    >
+                                        <div
+                                            class="produto-card estoque-produto-card"
+                                        >
+                                            <div class="icon-square">
+                                                <i class="bx bx-cylinder"></i>
+                                            </div>
+                                            <div class="produto-info">
+                                                <div class="produto-labels">
+                                                    <span class="produto-nome"
+                                                        >P45</span
+                                                    >
+                                                    <small
+                                                        class="estoque-produto-atual"
+                                                        id="estoque-atual-p45"
+                                                    >
+                                                        Atual: 0
+                                                    </small>
+                                                </div>
+                                                <div class="qty-controls">
+                                                    <button
+                                                        type="button"
+                                                        class="btn-qty estoque-minus"
+                                                        data-target="estoque-p45"
+                                                    >
+                                                        −
+                                                    </button>
+                                                    <span
+                                                        class="qty"
+                                                        id="qty-estoque-p45"
+                                                        >0</span
+                                                    >
+                                                    <button
+                                                        type="button"
+                                                        class="btn-qty estoque-plus"
+                                                        data-target="estoque-p45"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <input
+                                                type="hidden"
+                                                id="estoque-p45"
+                                                name="p45"
+                                                value="0"
+                                            />
+                                        </div>
+
+                                        <div
+                                            class="produto-card estoque-produto-card"
+                                        >
+                                            <div class="icon-square">
+                                                <i class="bx bx-cylinder"></i>
+                                            </div>
+                                            <div class="produto-info">
+                                                <div class="produto-labels">
+                                                    <span class="produto-nome"
+                                                        >P20</span
+                                                    >
+                                                    <small
+                                                        class="estoque-produto-atual"
+                                                        id="estoque-atual-p20"
+                                                    >
+                                                        Atual: 0
+                                                    </small>
+                                                </div>
+                                                <div class="qty-controls">
+                                                    <button
+                                                        type="button"
+                                                        class="btn-qty estoque-minus"
+                                                        data-target="estoque-p20"
+                                                    >
+                                                        −
+                                                    </button>
+                                                    <span
+                                                        class="qty"
+                                                        id="qty-estoque-p20"
+                                                        >0</span
+                                                    >
+                                                    <button
+                                                        type="button"
+                                                        class="btn-qty estoque-plus"
+                                                        data-target="estoque-p20"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <input
+                                                type="hidden"
+                                                id="estoque-p20"
+                                                name="p20"
+                                                value="0"
+                                            />
+                                        </div>
+
+                                        <div
+                                            class="produto-card estoque-produto-card"
+                                        >
+                                            <div class="icon-square">
+                                                <i class="bx bx-cylinder"></i>
+                                            </div>
+                                            <div class="produto-info">
+                                                <div class="produto-labels">
+                                                    <span class="produto-nome"
+                                                        >P13</span
+                                                    >
+                                                    <small
+                                                        class="estoque-produto-atual"
+                                                        id="estoque-atual-p13"
+                                                    >
+                                                        Atual: 0
+                                                    </small>
+                                                </div>
+                                                <div class="qty-controls">
+                                                    <button
+                                                        type="button"
+                                                        class="btn-qty estoque-minus"
+                                                        data-target="estoque-p13"
+                                                    >
+                                                        −
+                                                    </button>
+                                                    <span
+                                                        class="qty"
+                                                        id="qty-estoque-p13"
+                                                        >0</span
+                                                    >
+                                                    <button
+                                                        type="button"
+                                                        class="btn-qty estoque-plus"
+                                                        data-target="estoque-p13"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <input
+                                                type="hidden"
+                                                id="estoque-p13"
+                                                name="p13"
+                                                value="0"
+                                            />
+                                        </div>
+
+                                        <div
+                                            class="produto-card estoque-produto-card"
+                                        >
+                                            <div class="icon-square">
+                                                <i class="bx bx-cylinder"></i>
+                                            </div>
+                                            <div class="produto-info">
+                                                <div class="produto-labels">
+                                                    <span class="produto-nome"
+                                                        >P08</span
+                                                    >
+                                                    <small
+                                                        class="estoque-produto-atual"
+                                                        id="estoque-atual-p8"
+                                                    >
+                                                        Atual: 0
+                                                    </small>
+                                                </div>
+                                                <div class="qty-controls">
+                                                    <button
+                                                        type="button"
+                                                        class="btn-qty estoque-minus"
+                                                        data-target="estoque-p8"
+                                                    >
+                                                        −
+                                                    </button>
+                                                    <span
+                                                        class="qty"
+                                                        id="qty-estoque-p8"
+                                                        >0</span
+                                                    >
+                                                    <button
+                                                        type="button"
+                                                        class="btn-qty estoque-plus"
+                                                        data-target="estoque-p8"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <input
+                                                type="hidden"
+                                                id="estoque-p8"
+                                                name="p8"
+                                                value="0"
+                                            />
+                                        </div>
+
+                                        <div
+                                            class="produto-card estoque-produto-card"
+                                        >
+                                            <div class="icon-square">
+                                                <i class="bx bx-cylinder"></i>
+                                            </div>
+                                            <div class="produto-info">
+                                                <div class="produto-labels">
+                                                    <span class="produto-nome"
+                                                        >P05</span
+                                                    >
+                                                    <small
+                                                        class="estoque-produto-atual"
+                                                        id="estoque-atual-p5"
+                                                    >
+                                                        Atual: 0
+                                                    </small>
+                                                </div>
+                                                <div class="qty-controls">
+                                                    <button
+                                                        type="button"
+                                                        class="btn-qty estoque-minus"
+                                                        data-target="estoque-p5"
+                                                    >
+                                                        −
+                                                    </button>
+                                                    <span
+                                                        class="qty"
+                                                        id="qty-estoque-p5"
+                                                        >0</span
+                                                    >
+                                                    <button
+                                                        type="button"
+                                                        class="btn-qty estoque-plus"
+                                                        data-target="estoque-p5"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <input
+                                                type="hidden"
+                                                id="estoque-p5"
+                                                name="p5"
+                                                value="0"
+                                            />
+                                        </div>
+
+                                        <div
+                                            class="produto-card estoque-produto-card"
+                                        >
+                                            <div class="icon-square">
+                                                <i class="bx bx-water"></i>
+                                            </div>
+                                            <div class="produto-info">
+                                                <div class="produto-labels">
+                                                    <span class="produto-nome"
+                                                        >ÁGUA</span
+                                                    >
+                                                    <small
+                                                        class="estoque-produto-atual"
+                                                        id="estoque-atual-agua"
+                                                    >
+                                                        Atual: 0
+                                                    </small>
+                                                </div>
+                                                <div class="qty-controls">
+                                                    <button
+                                                        type="button"
+                                                        class="btn-qty estoque-minus"
+                                                        data-target="estoque-agua"
+                                                    >
+                                                        −
+                                                    </button>
+                                                    <span
+                                                        class="qty"
+                                                        id="qty-estoque-agua"
+                                                        >0</span
+                                                    >
+                                                    <button
+                                                        type="button"
+                                                        class="btn-qty estoque-plus"
+                                                        data-target="estoque-agua"
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <input
+                                                type="hidden"
+                                                id="estoque-agua"
+                                                name="agua"
+                                                value="0"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="estoque-resumo">
+                                        <p
+                                            id="estoque-resumo-text"
+                                            class="estoque-resumo-text"
+                                        >
+                                            Nenhum volume informado ainda.
+                                        </p>
+                                    </div>
+
+                                    <div class="submit-wrap estoque-submit">
+                                        <button
+                                            type="submit"
+                                            class="btn-submit estoque-btn"
+                                            id="estoque-submit-btn"
+                                        >
+                                            Salvar estoque inicial
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <script src="/static/js/dashboardDynamic.js"></script>
         <script src="/static/js/temaAmbiente.js"></script>
+        <script src="/static/js/estoqueConfig.js"></script>
     </body>
 </html>

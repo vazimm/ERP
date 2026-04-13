@@ -57,7 +57,8 @@ def init_test_users():
                 p8=8,
                 p5=5,
                 agua=15,
-                enviroment='Ambiente de Teste'
+                enviroment='Ambiente de Teste',
+                capacity=250  # Ambiente de teste começa no nível 1
             )
             db.session.add(sample)
             db.session.commit()

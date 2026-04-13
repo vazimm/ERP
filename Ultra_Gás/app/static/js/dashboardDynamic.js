@@ -39,6 +39,12 @@ menuLinks.forEach(link => {
         if (alvo) {
             alvo.classList.add('ativo');
             console.log('Mostrando seção:', nome);
+            // Garante que a página volte para o topo ao trocar de seção
+            try {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (e) {
+                window.scrollTo(0, 0);
+            }
         } else {
             console.warn('Nenhum elemento encontrado com ID:', nome);
         }
@@ -346,7 +352,30 @@ function fetchAndApplyEstoqueCards() {
                     if (recebEl) recebEl.textContent = '✅ Recebidos: ' + formatCurrencyBRL(data.pagamentos.recebidos_num || data.pagamentos.recebidos || 0);
                     if (pendEl) pendEl.textContent = '❌ Pendentes: ' + formatCurrencyBRL(data.pagamentos.pendentes_num || data.pagamentos.pendentes || 0);
                 }
-                if (statusEl && (data.status_estoque_percent_num != null)) statusEl.textContent = `${formatIntegerBR(data.status_estoque_percent_num)}%`;
+                if (statusEl && (data.status_estoque_percent_num != null)) {
+                    statusEl.textContent = `${formatIntegerBR(data.status_estoque_percent_num)}%`;
+                }
+
+                // Enriquecer o texto com o limite de estoque do ambiente, se disponível
+                if (statusEl) {
+                    fetch('/api/estoque/config')
+                        .then(resp => {
+                            if (!resp.ok) return null;
+                            return resp.json();
+                        })
+                        .then(cfg => {
+                            if (!cfg) return;
+                            const cap = Number(cfg.capacity || 0);
+                            const total = Number(cfg.current_total || 0);
+                            if (!cap) return;
+
+                            const pctCfg = (cfg.percent != null) ? Number(cfg.percent) : ((total / cap) * 100);
+                            statusEl.textContent = `${formatIntegerBR(pctCfg)}% (${formatIntegerBR(total)} / ${formatIntegerBR(cap)} itens)`;
+                        })
+                        .catch(() => {
+                            // Silencia erros desta chamada auxiliar para não quebrar o card
+                        });
+                }
             } catch (e) {
                 console.warn('[estoque-cards] erro ao aplicar dados', e);
             }

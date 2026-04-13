@@ -19,37 +19,49 @@ api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 @api_bp.route('/estoque', methods=['GET'])
 def api_estoque():
-    """Retorna dados simulados para o gráfico de estoque.
+    """Retorna dados para o gráfico de estoque.
 
     Estrutura retornada:
     {
       "summary": { "statusText": "..." },
-      "pie": { "p45": 10, "p20": 5, ... }
+      "pie": { "p45": 10, "p20": 5, ... },
+      "meta": { "capacity": 500, "total": 120, "percent": 24 }
     }
+
+    Também é usada como base para a sessão de configuração de estoque.
     """
     # Requer usuário autenticado para acessar informações de estoque
     env = session.get('enviroment')
     if not session.get('user_id') or not env:
         return jsonify({'error': 'Usuário não autenticado ou ambiente não definido'}), 401
+
+    from app.models.estoque import Estoque, DEFAULT_CAPACITY
+
     # Tenta buscar dados reais do banco
     try:
-        # Import dentro do bloco para evitar problemas de import circular na inicialização
-        # e para só tentar acessar o DB quando este endpoint for chamado.
-        from app.models.estoque import Estoque, DEFAULT_CAPACITY
         # Estoque apenas do mesmo enviroment do usuário
         estoque = Estoque.query.filter_by(enviroment=env).first()
         if estoque:
-            # Usa DEFAULT_CAPACITY (definido em app/models/estoque.py) para compor a mensagem.
+            capacidade = int(estoque.capacity or DEFAULT_CAPACITY)
+            total = estoque.total()
+            percent = estoque.percent(capacidade)
             data = {
-                "summary": {"statusText": f"Estoque: {estoque.total()} / {DEFAULT_CAPACITY} itens ({estoque.percent(DEFAULT_CAPACITY)}%)"},
-                "pie": estoque.to_pie()
+                "summary": {
+                    "statusText": f"Estoque: {total} / {capacidade} itens ({percent}%)"
+                },
+                "pie": estoque.to_pie(),
+                "meta": {
+                    "capacity": capacidade,
+                    "total": total,
+                    "percent": percent
+                }
             }
             return jsonify(data)
     except Exception:
         # se houver qualquer problema com o DB, cai no mock abaixo
         pass
 
-    # Fallback mock
+    # Fallback mock (sem dados reais de capacidade)
     data = {
         "summary": {"statusText": "Mock: estoque equilibrado — itens com baixa quantidade: 3"},
         "pie": {
@@ -59,9 +71,257 @@ def api_estoque():
             "p8": 8,
             "p5": 5,
             "agua": 15
+        },
+        "meta": {
+            "capacity": DEFAULT_CAPACITY,
+            "total": 0,
+            "percent": 0
         }
     }
     return jsonify(data)
+
+
+@api_bp.route('/estoque/config', methods=['GET'])
+def api_estoque_config():
+    """Retorna configuração de estoque para o ambiente do usuário.
+
+    Usado pela dashboard ambienteUserSettings para decidir entre modo
+    inicial (setup) e modo recorrente (apenas adições).
+    """
+    env = session.get('enviroment')
+    if not session.get('user_id') or not env:
+        return jsonify({'error': 'Usuário não autenticado ou ambiente não definido'}), 401
+
+    from app.models.estoque import Estoque, DEFAULT_CAPACITY
+
+    capacidade_niveis = [250, 500, 750, 1000]
+
+    estoque = Estoque.query.filter_by(enviroment=env).first()
+    if not estoque:
+        return jsonify({
+            'configured': False,
+            'capacity_levels': capacidade_niveis,
+            'capacity': None,
+            'current_total': 0,
+            'max_capacity': None,
+            'remaining': None,
+            'percent': 0,
+            'items': {
+                'p45': 0,
+                'p20': 0,
+                'p13': 0,
+                'p8': 0,
+                'p5': 0,
+                'agua': 0,
+            }
+        })
+
+    capacidade = int(estoque.capacity or DEFAULT_CAPACITY)
+    total = estoque.total()
+    percent = estoque.percent(capacidade)
+    remaining = max(0, capacidade - total)
+
+    return jsonify({
+        'configured': True,
+        'capacity_levels': capacidade_niveis,
+        'capacity': capacidade,
+        'current_total': total,
+        'max_capacity': capacidade,
+        'remaining': remaining,
+        'percent': percent,
+        'items': estoque.to_pie(),
+    })
+
+
+@api_bp.route('/estoque/setup', methods=['POST'])
+def api_estoque_setup():
+    """Configuração inicial de estoque para um ambiente.
+
+    Espera JSON:
+    {
+      "capacity": 250|500|750|1000,
+      "p45": int,
+      "p20": int,
+      "p13": int,
+      "p8": int,
+      "p5": int,
+      "agua": int
+    }
+    Só pode ser chamado se ainda não existir registro de estoque para o enviroment.
+    """
+    from app import db
+    from app.models.estoque import Estoque, DEFAULT_CAPACITY
+
+    env = session.get('enviroment')
+    if not session.get('user_id') or not env:
+        return jsonify({'error': 'Usuário não autenticado ou ambiente não definido'}), 401
+
+    # Se já existir estoque para este ambiente, deve usar o endpoint de adição
+    if Estoque.query.filter_by(enviroment=env).first():
+        return jsonify({'error': 'Estoque já configurado para este ambiente'}), 400
+
+    try:
+        data = request.get_json(force=True)
+    except Exception:
+        return jsonify({'error': 'JSON inválido'}), 400
+
+    if not isinstance(data, dict):
+        return jsonify({'error': 'Payload inválido'}), 400
+
+    capacidade_niveis = [250, 500, 750, 1000]
+    capacidade = int(data.get('capacity') or 0)
+    if capacidade not in capacidade_niveis:
+        return jsonify({'error': 'Capacidade inválida'}), 400
+
+    # Normaliza valores de cada tipo (não negativos)
+    def to_int(value):
+        try:
+            v = int(value)
+            return v if v >= 0 else 0
+        except Exception:
+            return 0
+
+    p45 = to_int(data.get('p45'))
+    p20 = to_int(data.get('p20'))
+    p13 = to_int(data.get('p13'))
+    p8 = to_int(data.get('p8'))
+    p5 = to_int(data.get('p5'))
+    agua = to_int(data.get('agua'))
+
+    total = p45 + p20 + p13 + p8 + p5 + agua
+    if total > capacidade:
+        return jsonify({'error': 'Volume inicial excede a capacidade selecionada'}), 400
+
+    # Também garante que nunca ultrapasse o limite físico global
+    if total > DEFAULT_CAPACITY:
+        return jsonify({'error': f'Volume inicial não pode ultrapassar {DEFAULT_CAPACITY} itens no total'}), 400
+
+    try:
+        estoque = Estoque(
+            p45=p45,
+            p20=p20,
+            p13=p13,
+            p8=p8,
+            p5=p5,
+            agua=agua,
+            enviroment=env,
+            capacity=capacidade,
+        )
+        db.session.add(estoque)
+        db.session.commit()
+
+        percent = estoque.percent(capacidade)
+        remaining = max(0, capacidade - estoque.total())
+
+        return jsonify({
+            'ok': True,
+            'capacity': capacidade,
+            'current_total': estoque.total(),
+            'percent': percent,
+            'remaining': remaining,
+            'items': estoque.to_pie(),
+        }), 201
+    except Exception as e:
+        try:
+            db.session.rollback()
+        except Exception:
+            pass
+        return jsonify({'error': 'Falha ao configurar estoque', 'detail': str(e)}), 500
+
+
+@api_bp.route('/estoque/add', methods=['POST'])
+def api_estoque_add():
+    """Adiciona volumes ao estoque já existente do ambiente.
+
+    Mesmo payload de /estoque/setup, porém os valores são incrementais.
+    """
+    from app import db
+    from app.models.estoque import Estoque, DEFAULT_CAPACITY
+
+    env = session.get('enviroment')
+    if not session.get('user_id') or not env:
+        return jsonify({'error': 'Usuário não autenticado ou ambiente não definido'}), 401
+
+    estoque = Estoque.query.filter_by(enviroment=env).first()
+    if not estoque:
+        return jsonify({'error': 'Estoque ainda não foi configurado para este ambiente'}), 400
+
+    try:
+        data = request.get_json(force=True)
+    except Exception:
+        return jsonify({'error': 'JSON inválido'}), 400
+
+    if not isinstance(data, dict):
+        return jsonify({'error': 'Payload inválido'}), 400
+
+    def to_int(value):
+        try:
+            v = int(value)
+            return v if v >= 0 else 0
+        except Exception:
+            return 0
+
+    add_p45 = to_int(data.get('p45'))
+    add_p20 = to_int(data.get('p20'))
+    add_p13 = to_int(data.get('p13'))
+    add_p8 = to_int(data.get('p8'))
+    add_p5 = to_int(data.get('p5'))
+    add_agua = to_int(data.get('agua'))
+
+    # Calcula novos valores propostos
+    new_p45 = (estoque.p45 or 0) + add_p45
+    new_p20 = (estoque.p20 or 0) + add_p20
+    new_p13 = (estoque.p13 or 0) + add_p13
+    new_p8 = (estoque.p8 or 0) + add_p8
+    new_p5 = (estoque.p5 or 0) + add_p5
+    new_agua = (estoque.agua or 0) + add_agua
+
+    capacidade = int(estoque.capacity or DEFAULT_CAPACITY)
+    total_novo = new_p45 + new_p20 + new_p13 + new_p8 + new_p5 + new_agua
+
+    if total_novo > capacidade:
+        remaining = max(0, capacidade - estoque.total())
+        return jsonify({
+            'error': 'Adição excede a capacidade máxima do estoque',
+            'remaining': remaining
+        }), 400
+
+    # Também respeita o limite físico global do modelo
+    if total_novo > DEFAULT_CAPACITY:
+        remaining_global = max(0, DEFAULT_CAPACITY - estoque.total())
+        return jsonify({
+            'error': f'Adição excede o limite físico global de {DEFAULT_CAPACITY} itens',
+            'remaining': remaining_global
+        }), 400
+
+    try:
+        estoque.p45 = new_p45
+        estoque.p20 = new_p20
+        estoque.p13 = new_p13
+        estoque.p8 = new_p8
+        estoque.p5 = new_p5
+        estoque.agua = new_agua
+
+        db.session.commit()
+
+        total = estoque.total()
+        percent = estoque.percent(capacidade)
+        remaining = max(0, capacidade - total)
+
+        return jsonify({
+            'ok': True,
+            'capacity': capacidade,
+            'current_total': total,
+            'percent': percent,
+            'remaining': remaining,
+            'items': estoque.to_pie(),
+        })
+    except Exception as e:
+        try:
+            db.session.rollback()
+        except Exception:
+            pass
+        return jsonify({'error': 'Falha ao adicionar ao estoque', 'detail': str(e)}), 500
 
 
 @api_bp.route('/pedidos', methods=['POST'])
